@@ -63,6 +63,7 @@ class NewInvoice extends GetView<SalesController> {
                   ],
                 ),
               );
+        controller.isCustomerChosen(false);
         return shouldPop ?? false;
       },
       child: Scaffold(

@@ -94,6 +94,7 @@ void itemQtyPopUp(ItemModel item, SalesController controller) {
                           controller.subQty.text = 0.toString();
                         }
                         calculatePrice();
+                        print('changed');
                       },
                       textAlign: TextAlign.center,
                       controller: controller.subQty,

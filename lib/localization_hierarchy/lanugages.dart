@@ -166,6 +166,7 @@ class Languages extends Translations {
           'Invoice Type': 'نوع الفاتورة',
           'Net Total': 'صافي الاجمالي',
           'VAT': 'ضريبة القيمة المضافة',
+          'Negative Visit': 'زيارة سلبية',
         },
       };
 }
