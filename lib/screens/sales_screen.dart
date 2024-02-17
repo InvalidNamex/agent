@@ -1,0 +1,311 @@
+import 'package:dropdown_search/dropdown_search.dart';
+import 'package:eit/controllers/customer_controller.dart';
+import 'package:eit/controllers/sales_controller.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+
+import '../constants.dart';
+import '../helpers/loader.dart';
+import '../models/customer_model.dart';
+
+class SalesScreen extends GetView<SalesController> {
+  const SalesScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final customerController = Get.find<CustomerController>();
+
+    return Scaffold(
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Get.toNamed('/new-invoice');
+        },
+        label: Text('New'.tr),
+        icon: const Icon(Icons.add),
+        backgroundColor: darkColor,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: Column(
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Expanded(
+                  child: Card(
+                    child: ListTile(
+                      leading: IconButton(
+                        onPressed: () async {
+                          controller.customerNameFilter('');
+                          controller.salesScreenDropDownCustomer.value =
+                              CustomerModel(custName: 'Choose Customer'.tr);
+                          controller.getFilteredInvoices();
+                        },
+                        icon: const Icon(
+                          Icons.close,
+                          color: Colors.red,
+                        ),
+                      ),
+                      title: Obx(
+                        () => customerController.customersList.isEmpty
+                            ? Text('Choose A Customer'.tr)
+                            : DropdownSearch<CustomerModel>(
+                                popupProps:
+                                    const PopupProps.menu(showSearchBox: true),
+                                items: customerController.customersList,
+                                itemAsString: (customer) => customer.custName!,
+                                onChanged: (customer) async {
+                                  CustomerModel customerModel = customer!;
+                                  controller.customerNameFilter(
+                                      customerModel.custName!);
+                                  Loading.load();
+                                  await controller.getFilteredInvoices();
+                                  Loading.dispose();
+                                },
+                                selectedItem: controller
+                                    .salesScreenDropDownCustomer.value,
+                              ),
+                      ),
+                      trailing: CircleAvatar(
+                          radius: 20,
+                          backgroundColor: accentColor,
+                          child: IconButton(
+                              onPressed: () {
+                                showFilterBottomSheet(context, controller);
+                              },
+                              icon: const Icon(
+                                Icons.filter_alt_outlined,
+                                color: lightColor,
+                              ))),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Expanded(
+              child: Obx(
+                () => controller.apiInvList.isEmpty
+                    ? Center(child: Text('No Invoices Found.'.tr))
+                    : ListView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        itemCount: controller.apiInvList.length,
+                        itemBuilder: (context, index) {
+                          return ExpansionTile(
+                              textColor: accentColor,
+                              iconColor: accentColor,
+                              title: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    'Invoice No: '.tr,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                  Text(controller.apiInvList[index].transID
+                                      .toString()),
+                                ],
+                              ),
+                              children: [
+                                Row(children: [
+                                  Text('Date: '.tr,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w700)),
+                                  Text(controller.formatDate(
+                                      controller.apiInvList[index].invDate))
+                                ]),
+                                Row(children: [
+                                  Text('Customer Name: '.tr,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w700)),
+                                  Text(controller.apiInvList[index].custName
+                                      .toString())
+                                ]),
+                                const Divider(
+                                  color: darkColor,
+                                  thickness: 1,
+                                ),
+                                Row(children: [
+                                  Text('Price: '.tr,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w700)),
+                                  Text(controller.apiInvList[index].invAmount
+                                      .toString())
+                                ]),
+                                Row(children: [
+                                  Card(
+                                    child: IconButton(
+                                        onPressed: () {},
+                                        icon: Icon(
+                                          Icons.print,
+                                          color: darkColor.withOpacity(0.7),
+                                        )),
+                                  ),
+                                  Card(
+                                    child:
+                                        controller.apiInvList[index].sysInvID ==
+                                                0
+                                            ? const Icon(
+                                                Icons.pause_presentation,
+                                                color: Colors.red,
+                                              )
+                                            : const Icon(
+                                                Icons.verified_outlined,
+                                                color: Colors.green,
+                                              ),
+                                  )
+                                ]),
+                              ]);
+                        }),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+void showFilterBottomSheet(BuildContext context, SalesController controller) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(25),
+        topRight: Radius.circular(25),
+      ),
+    ),
+    builder: (BuildContext context) {
+      return Obx(
+        () => Form(
+          key: controller.filterFormKey,
+          child: Container(
+            height: MediaQuery.of(context).size.height * 0.7,
+            padding: const EdgeInsets.all(8),
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    'Filter'.tr,
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.45,
+                        child: Column(
+                          children: [
+                            Text('Price Range From'.tr),
+                            Container(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 5),
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: accentColor),
+                                  borderRadius: BorderRadius.circular(25)),
+                              child: TextFormField(
+                                onTap: () {
+                                  controller.priceFrom.clear();
+                                },
+                                controller: controller.priceFrom,
+                                textAlign: TextAlign.center,
+                                keyboardType: TextInputType.number,
+                                decoration: const InputDecoration(
+                                    border: InputBorder.none),
+                              ),
+                            ),
+                            Card(
+                              child: ListTile(
+                                  trailing: const Icon(
+                                    Icons.calendar_month,
+                                    color: accentColor,
+                                  ),
+                                  title: Text('Date From'.tr),
+                                  subtitle: FittedBox(
+                                    child: Text(DateFormat('dd-MM-yyyy').format(
+                                        controller.dateFromFilter.value)),
+                                  ),
+                                  onTap: () {
+                                    selectDate(
+                                        context, controller.dateFromFilter);
+                                  }),
+                            )
+                          ],
+                        ),
+                      ),
+                      SizedBox(width: MediaQuery.of(context).size.width * 0.05),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.45,
+                        child: Column(
+                          children: [
+                            Text('Price Range To'.tr),
+                            Container(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 5),
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: accentColor),
+                                  borderRadius: BorderRadius.circular(25)),
+                              child: TextFormField(
+                                onTap: () {
+                                  controller.priceTo.clear();
+                                },
+                                controller: controller.priceTo,
+                                textAlign: TextAlign.center,
+                                keyboardType: TextInputType.number,
+                                decoration: const InputDecoration(
+                                    border: InputBorder.none),
+                              ),
+                            ),
+                            Card(
+                              child: ListTile(
+                                trailing: const Icon(
+                                  Icons.calendar_month,
+                                  color: accentColor,
+                                ),
+                                title: Text('Date To'.tr),
+                                subtitle: FittedBox(
+                                  child: Text(DateFormat('dd-MM-yyyy')
+                                      .format(controller.dateToFilter.value)),
+                                ),
+                                onTap: () => selectDate(
+                                    context, controller.dateToFilter),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      controller.getFilteredInvoices(
+                        isFiltered: true,
+                        amountFrom: double.parse(controller.priceFrom.text),
+                        amountTo: double.parse(controller.priceTo.text),
+                      );
+                      Get.back();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: accentColor,
+                    ),
+                    child: Text('Apply'.tr),
+                  )
+                ]),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+Future<void> selectDate(BuildContext context, Rx<DateTime> x) async {
+  final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: x.value,
+      firstDate: DateTime(2010),
+      lastDate: DateTime.now());
+  if (picked != null && picked != x.value) {
+    x(picked);
+  }
+}
