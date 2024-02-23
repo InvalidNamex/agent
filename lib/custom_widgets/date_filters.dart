@@ -4,42 +4,38 @@ import 'package:intl/intl.dart';
 
 import '../constants.dart';
 
-Widget dateToFilterMethod(Rx<DateTime> dateToFilter, BuildContext context) {
-  return Obx(
-    () => Card(
-      child: ListTile(
-        trailing: const Icon(
-          Icons.calendar_month,
-          color: accentColor,
-        ),
-        title: Text('Date To'.tr),
-        subtitle: FittedBox(
-          child: Text(DateFormat('dd-MM-yyyy').format(dateToFilter.value)),
-        ),
-        onTap: () => selectDate(context, dateToFilter),
+Card dateToFilterMethod(Rx<DateTime> dateToFilter, BuildContext context) {
+  return Card(
+    child: ListTile(
+      trailing: const Icon(
+        Icons.calendar_month,
+        color: accentColor,
       ),
+      title: Text('Date To'.tr),
+      subtitle: FittedBox(
+        child: Text(DateFormat('dd-MM-yyyy').format(dateToFilter.value)),
+      ),
+      onTap: () => selectDate(context, dateToFilter),
     ),
   );
 }
 
-Widget dateFromFilterMethod(Rx<DateTime> dateFromFilter, BuildContext context) {
-  return Obx(
-    () => Card(
-      // place this variable in controller
-      // Rx<DateTime> dateFromFilter = DateTime.now().obs;
-      child: ListTile(
-          trailing: const Icon(
-            Icons.calendar_month,
-            color: accentColor,
-          ),
-          title: Text('Date From'.tr),
-          subtitle: FittedBox(
-            child: Text(DateFormat('dd-MM-yyyy').format(dateFromFilter.value)),
-          ),
-          onTap: () {
-            selectDate(context, dateFromFilter);
-          }),
-    ),
+Card dateFromFilterMethod(Rx<DateTime> dateFromFilter, BuildContext context) {
+  return Card(
+    // place this variable in controller
+    // Rx<DateTime> dateFromFilter = DateTime.now().obs;
+    child: ListTile(
+        trailing: const Icon(
+          Icons.calendar_month,
+          color: accentColor,
+        ),
+        title: Text('Date From'.tr),
+        subtitle: FittedBox(
+          child: Text(DateFormat('dd-MM-yyyy').format(dateFromFilter.value)),
+        ),
+        onTap: () {
+          selectDate(context, dateFromFilter);
+        }),
   );
 }
 

@@ -1,6 +1,7 @@
 import 'package:eit/controllers/customer_controller.dart';
 import 'package:eit/models/api/api_customer_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:place_picker/place_picker.dart';
 
@@ -16,7 +17,7 @@ class NewCustomer extends GetView<CustomerController> {
   TextEditingController custAddress = TextEditingController();
   TextEditingController custPhone = TextEditingController();
   TextEditingController custTaxNo = TextEditingController();
-  LatLng? latLng;
+  var latLng = Rx<LatLng?>(null);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -153,23 +154,30 @@ class NewCustomer extends GetView<CustomerController> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: InkWell(
-                        onTap: () async {
-                          //todo: fix
-                          LocationResult? result = await Get.to(PlacePicker(
-                              "AIzaSyACAxk7vbjGWFMLNgsObR1sCzAefUZIWq8"));
-                          latLng = result?.latLng;
-                          print(latLng!.longitude);
-                          print(latLng!.latitude);
-                        },
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(
+                      onTap: () async {
+                        await dotenv.load(fileName: ".env");
+                        LocationResult? result =
+                            await Get.to(PlacePicker(dotenv.env['MAPAPI']!));
+                        latLng.value = result?.latLng;
+                      },
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Obx(
+                            () => Icon(
                               Icons.location_on_outlined,
+                              color: latLng.value == null
+                                  ? darkColor
+                                  : accentColor,
                             ),
-                            FittedBox(child: Text('Location'.tr))
-                          ],
-                        )),
+                          ),
+                          FittedBox(
+                              child: Text(
+                            'Location'.tr,
+                          ))
+                        ],
+                      ),
+                    ),
                   )
                 ],
               ),
@@ -246,7 +254,7 @@ class NewCustomer extends GetView<CustomerController> {
                     ),
                   ),
                   onPressed: () async {
-                    if (latLng != null) {
+                    if (latLng.value != null) {
                       final authController = Get.find<AuthController>();
                       if (newCustomerForm.currentState!.validate()) {
                         ApiCustomerModel customerModel = ApiCustomerModel(
@@ -257,8 +265,8 @@ class NewCustomer extends GetView<CustomerController> {
                             phoneNo: custPhone.text,
                             taxNo:
                                 custTaxNo.text.isEmpty ? '0' : custTaxNo.text,
-                            latitude: latLng!.latitude.toString(),
-                            longitude: latLng!.longitude.toString(),
+                            latitude: latLng.value!.latitude.toString(),
+                            longitude: latLng.value!.longitude.toString(),
                             salesRepId: authController.userModel!.saleRepID);
                         await controller.saveCustomer(customerModel);
                       }

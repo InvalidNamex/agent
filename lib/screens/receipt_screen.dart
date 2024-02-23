@@ -41,15 +41,18 @@ class ReceiptScreen extends GetView<ReceiptController> {
         children: [
           SizedBox(
             height: 100,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Flexible(
-                    child: dateFromFilterMethod(
-                        controller.dateFromFilter, context)),
-                Flexible(
-                    child: dateToFilterMethod(controller.dateToFilter, context))
-              ],
+            child: Obx(
+              () => Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Flexible(
+                      child: dateFromFilterMethod(
+                          controller.dateFromFilter, context)),
+                  Flexible(
+                      child:
+                          dateToFilterMethod(controller.dateToFilter, context))
+                ],
+              ),
             ),
           )
         ],

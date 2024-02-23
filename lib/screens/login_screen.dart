@@ -38,6 +38,7 @@ class LoginScreen extends GetView<AuthController> {
                     return null; // Return null if the input is valid
                   },
                   decoration: InputDecoration(
+                    suffixIcon: const SizedBox(),
                     prefixIcon: const Icon(
                       Icons.person,
                       color: accentColor,
@@ -62,6 +63,7 @@ class LoginScreen extends GetView<AuthController> {
                   // cursorColor: darkColor, // Change the cursor color
                   autofocus: true,
                   textAlign: TextAlign.center,
+
                   controller: controller.usernameTextController,
                 ),
                 const SizedBox(

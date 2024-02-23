@@ -51,6 +51,7 @@ dependencies:
   google_maps_flutter: ^2.5.3
   place_picker: ^0.10.0
   url_launcher:
+  flutter_dotenv: ^5.1.0
   logger: ^2.0.2+1
   path_provider:
   connectivity_plus: ^5.0.2
@@ -81,6 +82,7 @@ flutter:
     - assets/
     - assets/images/
     - assets/fonts/
+    - .env
 
   fonts:
     - family: Cairo

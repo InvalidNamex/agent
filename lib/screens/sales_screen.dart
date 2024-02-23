@@ -40,6 +40,9 @@ class SalesScreen extends GetView<SalesController> {
                           controller.customerNameFilter('');
                           controller.salesScreenDropDownCustomer.value =
                               CustomerModel(custName: 'Choose Customer'.tr);
+                          controller.dateFromFilter.value =
+                              firstOfJanuaryLastYear();
+                          controller.dateToFilter(DateTime.now());
                           controller.getFilteredInvoices();
                         },
                         icon: const Icon(
