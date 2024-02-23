@@ -121,10 +121,10 @@ class Languages extends Translations {
           'You must first choose a customer':
               'يجب تحديد العميل قبل اختيار الصنف',
           'Do you want to leave the app?': 'هل تريد مغادرة التطبيق؟',
-          'Pay type is cash': 'طريقة الدفع نقدي',
           'Pay Type: ': 'طريقة الدفع: ',
           'Select pay type': 'اختر طريقة الدفع',
           'Cash': 'نقدًًا',
+          'Receipt': 'سند قبض',
           'Credit': 'آجل',
           'New Customer': 'عميل جديد',
           'Location': 'الموقع',
@@ -134,6 +134,9 @@ class Languages extends Translations {
           'Customer Code: ': 'كود العميل: ',
           'Error occurred, please contact support':
               'يوجد خطأ. من فضلك تواصل مع الدعم الفني',
+          'Failed to get address': 'فشل الحصول على العنوان',
+          'Could not find address': 'فشل الحصول على العنوان',
+          'New Receipt': 'سند قبض جديد'
         },
       };
 }

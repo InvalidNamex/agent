@@ -1,27 +1,40 @@
-import 'package:flutter/material.dart';
+import 'dart:ui';
+
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalizationController extends GetxController {
   static LocalizationController instance = Get.find();
-  final lang = GetStorage();
-  saveLocale(String language) {
-    lang.write('locale', language);
+  Future<void> saveLocale(String language) async {
+    if (language == 'ar') {
+      final prefs = await SharedPreferences.getInstance();
+      const key = 'language';
+      const value = 'ar';
+      await prefs.setString(key, value);
+    } else {
+      final prefs = await SharedPreferences.getInstance();
+      const key = 'language';
+      const value = 'en';
+      await prefs.setString(key, value);
+    }
   }
 
-  updateLocale() {
-    if (lang.read('locale') == 'ar') {
+  Future<void> readLocale() async {
+    final prefs = await SharedPreferences.getInstance();
+    const key = 'language';
+    String? value = prefs.getString(key);
+    if (value == 'ar') {
       Get.updateLocale(const Locale('ar', 'EG'));
-      print(lang.read('locale'));
-    } else {
+    } else if (value == 'en') {
       Get.updateLocale(const Locale('en', 'US'));
-      print(lang.read('locale'));
+    } else {
+      Get.deviceLocale;
     }
   }
 
   @override
-  void onReady() {
-    updateLocale();
+  void onReady() async {
+    await readLocale();
     super.onReady();
   }
 }

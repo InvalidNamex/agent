@@ -46,7 +46,6 @@ updateLocale(Locale locale) {
 }
 /**
     ----------- Under GetMaterialApp --------------
-    translations: Translation(),
     locale: Get.deviceLocale,
     Pass this in onPressed to the button used to choose language
     showLocaleDialog(context);

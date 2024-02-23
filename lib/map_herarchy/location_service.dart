@@ -1,5 +1,8 @@
 import 'package:eit/helpers/toast.dart';
+import 'package:get/get.dart';
 import 'package:location/location.dart';
+import 'package:logger/logger.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LocationService {
   final Location location = Location();
@@ -42,6 +45,22 @@ class LocationService {
       }
     } else {
       return null;
+    }
+  }
+
+  static Future<void> launchMapsUrl(
+      {required double lat, required double long}) async {
+    try {
+      final Uri url = Uri.parse(
+          'https://www.google.com/maps/search/?api=1&query=$lat,$long');
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url);
+      } else {
+        AppToasts.errorToast('Could not find address'.tr);
+      }
+    } catch (e) {
+      Logger logger = Logger();
+      logger.d(e);
     }
   }
 }

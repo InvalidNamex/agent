@@ -3,9 +3,9 @@ import 'package:eit/controllers/customer_controller.dart';
 import 'package:eit/controllers/sales_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 import '../constants.dart';
+import '../custom_widgets/date_filters.dart';
 import '../helpers/loader.dart';
 import '../models/customer_model.dart';
 
@@ -215,22 +215,8 @@ void showFilterBottomSheet(BuildContext context, SalesController controller) {
                                     border: InputBorder.none),
                               ),
                             ),
-                            Card(
-                              child: ListTile(
-                                  trailing: const Icon(
-                                    Icons.calendar_month,
-                                    color: accentColor,
-                                  ),
-                                  title: Text('Date From'.tr),
-                                  subtitle: FittedBox(
-                                    child: Text(DateFormat('dd-MM-yyyy').format(
-                                        controller.dateFromFilter.value)),
-                                  ),
-                                  onTap: () {
-                                    selectDate(
-                                        context, controller.dateFromFilter);
-                                  }),
-                            )
+                            dateFromFilterMethod(
+                                controller.dateFromFilter, context)
                           ],
                         ),
                       ),
@@ -257,21 +243,7 @@ void showFilterBottomSheet(BuildContext context, SalesController controller) {
                                     border: InputBorder.none),
                               ),
                             ),
-                            Card(
-                              child: ListTile(
-                                trailing: const Icon(
-                                  Icons.calendar_month,
-                                  color: accentColor,
-                                ),
-                                title: Text('Date To'.tr),
-                                subtitle: FittedBox(
-                                  child: Text(DateFormat('dd-MM-yyyy')
-                                      .format(controller.dateToFilter.value)),
-                                ),
-                                onTap: () => selectDate(
-                                    context, controller.dateToFilter),
-                              ),
-                            )
+                            dateToFilterMethod(controller.dateToFilter, context)
                           ],
                         ),
                       ),
@@ -297,15 +269,4 @@ void showFilterBottomSheet(BuildContext context, SalesController controller) {
       );
     },
   );
-}
-
-Future<void> selectDate(BuildContext context, Rx<DateTime> x) async {
-  final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: x.value,
-      firstDate: DateTime(2010),
-      lastDate: DateTime.now());
-  if (picked != null && picked != x.value) {
-    x(picked);
-  }
 }

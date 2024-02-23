@@ -108,27 +108,6 @@ class CustomDrawer extends StatelessWidget {
             ),
           ),
           Card(
-            child: ListTile(
-              onTap: () async {
-                final authController = Get.find<AuthController>();
-                await authController.clearDataFromPrefs('userData');
-                Get.offAllNamed('/login-screen');
-              },
-              leading: Image.asset(
-                'assets/images/drawer_logout.png',
-                height: 30,
-                width: 30,
-              ),
-              title: Text(
-                'Log Out'.tr,
-                style: const TextStyle(
-                    fontFamily: 'Cairo',
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18),
-              ),
-            ),
-          ),
-          Card(
             child: ExpansionTile(
               textColor: darkColor,
               iconColor: darkColor,
@@ -158,27 +137,97 @@ class CustomDrawer extends StatelessWidget {
                     'Sell Price Included VAT'.tr,
                   ),
                   trailing: Obx(() => Checkbox(
-                        value: controller.isPayTypeCash.value,
+                        value: controller.vatIncluded.value,
                         onChanged: (bool? value) {
-                          controller.isPayTypeCash(value);
-                          controller.setPayTypePref(isCash: value!);
+                          controller.vatIncluded(value);
+                          controller.setPayTypePref(
+                              boolName: 'vatIncluded', isCash: value!);
                         },
                       )),
                 ),
                 ListTile(
                   onTap: () async {},
                   title: Text(
-                    'Pay type is cash'.tr,
+                    'Payment Gateway Is Cash'.tr,
                   ),
                   trailing: Obx(() => Checkbox(
                         value: controller.isPayTypeCash.value,
                         onChanged: (bool? value) {
                           controller.isPayTypeCash(value);
-                          controller.setPayTypePref(isCash: value!);
+                          controller.setPayTypePref(
+                              boolName: 'isCash', isCash: value!);
+                        },
+                      )),
+                ),
+                ListTile(
+                  onTap: () async {},
+                  title: Text(
+                    'Enable Customer Limit'.tr,
+                  ),
+                  trailing: Obx(() => Checkbox(
+                        value: controller.enableCustomerLimit.value,
+                        onChanged: (bool? value) {
+                          controller.enableCustomerLimit(value);
+                          controller.setPayTypePref(
+                              boolName: 'enableCustomerLimit', isCash: value!);
+                        },
+                      )),
+                ),
+                ListTile(
+                  onTap: () async {},
+                  title: Text(
+                    'Add Taxable And Non Taxable Products In Sales'.tr,
+                  ),
+                  trailing: Obx(() => Checkbox(
+                        value: controller
+                            .addTaxableAndNonTaxableProductsInSales.value,
+                        onChanged: (bool? value) {
+                          controller
+                              .addTaxableAndNonTaxableProductsInSales(value);
+                          controller.setPayTypePref(
+                              boolName:
+                                  'addTaxableAndNonTaxableProductsInSales',
+                              isCash: value!);
+                        },
+                      )),
+                ),
+                ListTile(
+                  onTap: () async {},
+                  title: Text(
+                    'Following Up Invoices Payment'.tr,
+                  ),
+                  trailing: Obx(() => Checkbox(
+                        value: controller.followingUpInvoicesPayment.value,
+                        onChanged: (bool? value) {
+                          controller.followingUpInvoicesPayment(value);
+                          controller.setPayTypePref(
+                              boolName: 'followingUpInvoicesPayment',
+                              isCash: value!);
                         },
                       )),
                 ),
               ],
+            ),
+          ),
+          Card(
+            child: ListTile(
+              onTap: () async {
+                final authController = Get.find<AuthController>();
+                await authController.clearDataFromPrefs('userData');
+                Get.offAllNamed('/login-screen');
+              },
+              leading: Image.asset(
+                'assets/images/drawer_logout.png',
+                height: 30,
+                width: 30,
+              ),
+              title: Text(
+                'Log Out'.tr,
+                style: const TextStyle(
+                    fontFamily: 'Cairo',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18),
+              ),
             ),
           ),
         ],

@@ -45,7 +45,7 @@ Widget homeTile({required String image, required String name}) {
             homeController.navigateToTab(3);
             break;
           case 'Receipt Vouchers':
-            Get.toNamed('');
+            Get.toNamed('/receipt-screen');
             break;
           case 'Visits Plans':
             Get.toNamed('');

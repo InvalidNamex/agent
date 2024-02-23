@@ -2,12 +2,10 @@ import 'package:eit/controllers/customer_controller.dart';
 import 'package:eit/models/api/api_customer_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:location/location.dart';
+import 'package:place_picker/place_picker.dart';
 
 import '../constants.dart';
 import '../controllers/auth_controller.dart';
-import '../helpers/loader.dart';
-import '../helpers/location_service.dart';
 import '../helpers/toast.dart';
 
 class NewCustomer extends GetView<CustomerController> {
@@ -18,6 +16,7 @@ class NewCustomer extends GetView<CustomerController> {
   TextEditingController custAddress = TextEditingController();
   TextEditingController custPhone = TextEditingController();
   TextEditingController custTaxNo = TextEditingController();
+  LatLng? latLng;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -154,8 +153,13 @@ class NewCustomer extends GetView<CustomerController> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: InkWell(
-                        onTap: () {
-                          //todo: navigate to map selector
+                        onTap: () async {
+                          //todo: fix
+                          LocationResult? result = await Get.to(PlacePicker(
+                              "AIzaSyACAxk7vbjGWFMLNgsObR1sCzAefUZIWq8"));
+                          latLng = result?.latLng;
+                          print(latLng!.longitude);
+                          print(latLng!.latitude);
                         },
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -242,12 +246,7 @@ class NewCustomer extends GetView<CustomerController> {
                     ),
                   ),
                   onPressed: () async {
-                    Loading.load();
-                    LocationData? locationData =
-                        await LocationService().getLocationData();
-                    Loading.dispose();
-                    if ((locationData?.longitude != 0.0) ||
-                        (locationData?.latitude != 0.0)) {
+                    if (latLng != null) {
                       final authController = Get.find<AuthController>();
                       if (newCustomerForm.currentState!.validate()) {
                         ApiCustomerModel customerModel = ApiCustomerModel(
@@ -258,8 +257,8 @@ class NewCustomer extends GetView<CustomerController> {
                             phoneNo: custPhone.text,
                             taxNo:
                                 custTaxNo.text.isEmpty ? '0' : custTaxNo.text,
-                            latitude: locationData?.latitude.toString(),
-                            longitude: locationData?.longitude.toString(),
+                            latitude: latLng!.latitude.toString(),
+                            longitude: latLng!.longitude.toString(),
                             salesRepId: authController.userModel!.saleRepID);
                         await controller.saveCustomer(customerModel);
                       }

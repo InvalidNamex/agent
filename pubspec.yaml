@@ -48,9 +48,12 @@ dependencies:
   location: ^5.0.0
   printing: ^5.11.1
   pdf:
-  get_storage:
+  google_maps_flutter: ^2.5.3
+  place_picker: ^0.10.0
+  url_launcher:
   logger: ^2.0.2+1
   path_provider:
+  connectivity_plus: ^5.0.2
 dev_dependencies:
   flutter_test:
     sdk: flutter

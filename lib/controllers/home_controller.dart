@@ -8,6 +8,10 @@ class HomeController extends GetxController
     with GetSingleTickerProviderStateMixin {
   late TabController tabController;
   RxBool isPayTypeCash = false.obs;
+  RxBool vatIncluded = false.obs;
+  RxBool enableCustomerLimit = false.obs;
+  RxBool addTaxableAndNonTaxableProductsInSales = false.obs;
+  RxBool followingUpInvoicesPayment = false.obs;
 
   List<Map<String, String>> homeElements = [
     {'Sales': 'assets/images/colored_sells_card.png'},
@@ -22,19 +26,20 @@ class HomeController extends GetxController
     tabController.animateTo(index);
   }
 
-  Future<void> setPayTypePref({required bool isCash}) async {
+  Future<void> setPayTypePref(
+      {required String boolName, required bool isCash}) async {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('isCash', isCash);
+      await prefs.setBool(boolName, isCash);
     } catch (e) {
       AppToasts.errorToast(e.toString());
     }
   }
 
-  Future<bool> readPayTypePref() async {
+  Future<bool> readPayTypePref({required String boolName}) async {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      final bool isCash = prefs.getBool('isCash') ?? false;
+      final bool isCash = prefs.getBool(boolName) ?? false;
       return isCash;
     } catch (e) {
       AppToasts.errorToast('Unknown Server'.tr);
@@ -44,7 +49,13 @@ class HomeController extends GetxController
 
   @override
   void onReady() async {
-    isPayTypeCash(await readPayTypePref());
+    isPayTypeCash(await readPayTypePref(boolName: 'isCash'));
+    vatIncluded(await readPayTypePref(boolName: 'vatIncluded'));
+    enableCustomerLimit(await readPayTypePref(boolName: 'enableCustomerLimit'));
+    addTaxableAndNonTaxableProductsInSales(await readPayTypePref(
+        boolName: 'addTaxableAndNonTaxableProductsInSales'));
+    followingUpInvoicesPayment(
+        await readPayTypePref(boolName: 'followingUpInvoicesPayment'));
     super.onReady();
   }
 

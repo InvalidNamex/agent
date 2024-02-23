@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 
+import '../custom_widgets/date_filters.dart';
 import '../helpers/toast.dart';
 import '../models/api/api_invoice_item.dart';
 import '../models/api/api_invoice_model.dart';
@@ -144,12 +145,6 @@ class SalesController extends GetxController {
       var logger = Logger();
       logger.d(e.toString());
     }
-  }
-
-  DateTime firstOfJanuaryLastYear() {
-    DateTime now = DateTime.now();
-    int lastYear = now.year - 1;
-    return DateTime(lastYear, 1, 1); // 1st January of last year
   }
 
   String formatDate(String? dateStr) {

@@ -4,8 +4,11 @@ import 'package:eit/helpers/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 
 import '../custom_widgets/download_customers.dart';
+import '../helpers/toast.dart';
+import '../map_herarchy/location_service.dart';
 
 class CustomersScreen extends GetView<CustomerController> {
   const CustomersScreen({super.key});
@@ -89,7 +92,21 @@ class CustomersScreen extends GetView<CustomerController> {
             Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: IconButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    if (x.gpsLocation != null) {
+                      try {
+                        List<String> parts = x.gpsLocation!.split("-");
+                        double lat = double.parse(parts[0]);
+                        double long = double.parse(parts[1]);
+                        await LocationService.launchMapsUrl(
+                            lat: lat, long: long);
+                      } catch (e) {
+                        AppToasts.errorToast('Could not find address'.tr);
+                        Logger logger = Logger();
+                        logger.d(e);
+                      }
+                    }
+                  },
                   icon: const Icon(
                     Icons.edit_location_alt_outlined,
                     color: accentColor,

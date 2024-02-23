@@ -1,8 +1,12 @@
+import 'dart:io';
 import 'dart:ui';
 
+import 'package:eit/constants.dart';
+import 'package:eit/screens/receipt_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '/screens/home_screen.dart';
 import '/screens/index_screen.dart';
@@ -15,6 +19,9 @@ import 'localization_herarchy/lanugages.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  if (Platform.isAndroid) {
+    AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
+  }
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
   ));
@@ -45,9 +52,9 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       enableLog: true,
       theme: ThemeData(
-        useMaterial3: false,
-        fontFamily: 'Cairo',
-      ),
+          useMaterial3: false,
+          fontFamily: 'Cairo',
+          appBarTheme: const AppBarTheme(backgroundColor: lightColor)),
       logWriterCallback: (text, {isError = false}) {
         if (isError) {
           Get.defaultDialog(
@@ -86,6 +93,12 @@ class MyApp extends StatelessWidget {
         GetPage(
             name: '/home-screen',
             page: () => const HomeScreen(),
+            binding: HomeBinding(),
+            transition: Transition.leftToRight,
+            transitionDuration: const Duration(milliseconds: 200)),
+        GetPage(
+            name: '/receipt-screen',
+            page: () => const ReceiptScreen(),
             binding: HomeBinding(),
             transition: Transition.leftToRight,
             transitionDuration: const Duration(milliseconds: 200)),
