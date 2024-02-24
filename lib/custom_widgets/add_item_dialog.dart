@@ -108,7 +108,7 @@ void itemQtyPopUp(ItemModel item, SalesController controller) {
                         ),
                       ),
                     ),
-                    trailing: Text(item.mainUnitPack.toString() ?? ''),
+                    trailing: Text(item.mainUnitPack.toString()),
                   ),
                 ),
           item.smallUnit.isBlank!
@@ -143,7 +143,7 @@ void itemQtyPopUp(ItemModel item, SalesController controller) {
                         ),
                       ),
                     ),
-                    trailing: Text(item.subUnitPack.toString() ?? ''),
+                    trailing: Text(item.subUnitPack.toString()),
                   ),
                 ),
           Row(

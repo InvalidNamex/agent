@@ -136,7 +136,15 @@ class Languages extends Translations {
               'يوجد خطأ. من فضلك تواصل مع الدعم الفني',
           'Failed to get address': 'فشل الحصول على العنوان',
           'Could not find address': 'فشل الحصول على العنوان',
-          'New Receipt': 'سند قبض جديد'
+          'New Receipt': 'سند قبض جديد',
+          'Error occurred, contact support': 'حدث خطأ, تواصل مع الدعم',
+          'Amount: ': 'الكمية: ',
+          'Note: ': 'بيان: ',
+          'Doc No: ': 'رقم المستند: ',
+          'No Notes': 'لا توجد ملاحظات',
+          'Amount': 'الكمية',
+          'Notes': 'ملاحظات',
+          'Save Receipt': 'حفظ السند',
         },
       };
 }

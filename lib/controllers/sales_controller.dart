@@ -42,6 +42,7 @@ class SalesController extends GetxController {
       invoiceItemsList.fold(0, (sum, item) => sum + (item.discount ?? 0));
   double get grandTotal =>
       invoiceItemsList.fold(0, (sum, item) => sum + (item.total ?? 0));
+  //todo: find getter and setter to set the value of the above variables
   RxList<ApiInvoiceItem> apiInvoiceItemList = RxList<ApiInvoiceItem>();
   RxList<ItemModel> customerItemsList = RxList<ItemModel>();
   RxBool isCustomerChosen = false.obs;
@@ -184,7 +185,9 @@ class SalesController extends GetxController {
         AppToasts.errorToast('Connection Error'.tr);
       }
     } catch (e) {
-      AppToasts.errorToast(e.toString());
+      AppToasts.errorToast('Error occurred, contact support'.tr);
+      Logger logger = Logger();
+      logger.d(e.toString());
     } finally {
       isLoading(false);
     }

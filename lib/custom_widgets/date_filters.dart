@@ -4,7 +4,8 @@ import 'package:intl/intl.dart';
 
 import '../constants.dart';
 
-Card dateToFilterMethod(Rx<DateTime> dateToFilter, BuildContext context) {
+Card dateToFilterMethod(Rx<DateTime> dateToFilter, BuildContext context,
+    {Function? optionalFunction}) {
   return Card(
     child: ListTile(
       trailing: const Icon(
@@ -15,15 +16,20 @@ Card dateToFilterMethod(Rx<DateTime> dateToFilter, BuildContext context) {
       subtitle: FittedBox(
         child: Text(DateFormat('dd-MM-yyyy').format(dateToFilter.value)),
       ),
-      onTap: () => selectDate(context, dateToFilter),
+      onTap: () async {
+        if (optionalFunction != null) {
+          selectDate(context, dateToFilter, optionalFunction: optionalFunction);
+        } else {
+          selectDate(context, dateToFilter);
+        }
+      },
     ),
   );
 }
 
-Card dateFromFilterMethod(Rx<DateTime> dateFromFilter, BuildContext context) {
+Card dateFromFilterMethod(Rx<DateTime> dateFromFilter, BuildContext context,
+    {Function? optionalFunction}) {
   return Card(
-    // place this variable in controller
-    // Rx<DateTime> dateFromFilter = DateTime.now().obs;
     child: ListTile(
         trailing: const Icon(
           Icons.calendar_month,
@@ -33,8 +39,13 @@ Card dateFromFilterMethod(Rx<DateTime> dateFromFilter, BuildContext context) {
         subtitle: FittedBox(
           child: Text(DateFormat('dd-MM-yyyy').format(dateFromFilter.value)),
         ),
-        onTap: () {
-          selectDate(context, dateFromFilter);
+        onTap: () async {
+          if (optionalFunction != null) {
+            selectDate(context, dateFromFilter,
+                optionalFunction: optionalFunction);
+          } else {
+            selectDate(context, dateFromFilter);
+          }
         }),
   );
 }
@@ -45,7 +56,8 @@ DateTime firstOfJanuaryLastYear() {
   return DateTime(lastYear, 1, 1); // 1st January of last year
 }
 
-Future<void> selectDate(BuildContext context, Rx<DateTime> x) async {
+Future<void> selectDate(BuildContext context, Rx<DateTime> x,
+    {Function? optionalFunction}) async {
   final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: x.value,
@@ -53,5 +65,8 @@ Future<void> selectDate(BuildContext context, Rx<DateTime> x) async {
       lastDate: DateTime.now());
   if (picked != null && picked != x.value) {
     x(picked);
+    if (optionalFunction != null) {
+      await optionalFunction();
+    }
   }
 }

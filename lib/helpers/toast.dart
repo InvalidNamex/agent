@@ -2,12 +2,16 @@ import 'package:eit/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:logger/logger.dart';
 
 class AppToasts {
   static Future<bool?> errorToast(String msg) {
     try {
       copyToClipboard(msg);
-    } catch (e) {}
+    } catch (e) {
+      Logger logger = Logger();
+      logger.d(e);
+    }
     return Fluttertoast.showToast(
         msg: msg,
         toastLength: Toast.LENGTH_LONG,
