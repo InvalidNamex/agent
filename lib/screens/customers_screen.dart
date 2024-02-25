@@ -8,7 +8,7 @@ import 'package:logger/logger.dart';
 
 import '../custom_widgets/download_customers.dart';
 import '../helpers/toast.dart';
-import '../map_herarchy/location_service.dart';
+import '../map_hierarchy/location_service.dart';
 
 class CustomersScreen extends GetView<CustomerController> {
   const CustomersScreen({super.key});

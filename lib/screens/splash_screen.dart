@@ -3,7 +3,7 @@ import 'package:eit/controllers/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../map_herarchy/location_service.dart';
+import '../map_hierarchy/location_service.dart';
 
 class SplashScreen extends GetView<AuthController> {
   const SplashScreen({super.key});

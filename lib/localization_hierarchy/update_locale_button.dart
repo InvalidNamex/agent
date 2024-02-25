@@ -1,4 +1,4 @@
-import 'package:eit/localization_herarchy/localization_controller.dart';
+import 'package:eit/localization_hierarchy/localization_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import '/custom_widgets/date_filters.dart';
 import '/screens/new_receipt.dart';
 import 'package:flutter/material.dart';
@@ -71,82 +69,89 @@ class ReceiptScreen extends GetView<ReceiptController> {
             ),
             controller.receiptModelList.isEmpty
                 ? Center(child: Text('No Invoices Found.'.tr))
-                : ListView.builder(
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    itemCount: controller.receiptModelList.length,
-                    itemBuilder: (context, index) {
-                      String? date =
-                          controller.receiptModelList[index].transDt ?? '';
-                      List<String?>? newDate = date.split('T');
-                      return ExpansionTile(
-                        textColor: accentColor,
-                        iconColor: accentColor,
-                        title: Text(
-                          controller.receiptModelList[index].custName ?? '',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        leading: Text(newDate[0] ?? ''),
-                        children: [
-                          controller.receiptModelList[index].docNo != null &&
-                                  controller.receiptModelList[index].docNo != ''
-                              ? Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        'Doc No: '.tr,
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(controller
-                                          .receiptModelList[index].docNo
-                                          .toString()),
-                                    ],
-                                  ),
-                                )
-                              : const SizedBox(),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'Amount: '.tr,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Text((controller
-                                            .receiptModelList[index].payValue ??
-                                        0)
-                                    .toString()),
-                              ],
+                : Expanded(
+                    child: ListView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        itemCount: controller.receiptModelList.length,
+                        itemBuilder: (context, index) {
+                          String? date =
+                              controller.receiptModelList[index].transDt ?? '';
+                          List<String?>? newDate = date.split('T');
+                          return ExpansionTile(
+                            textColor: accentColor,
+                            iconColor: accentColor,
+                            title: Text(
+                              controller.receiptModelList[index].custName ?? '',
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
                             ),
-                          ),
-                          controller.receiptModelList[index].notes != ''
-                              ? Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        'Notes: '.tr,
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
+                            leading: Text(newDate[0] ?? ''),
+                            children: [
+                              controller.receiptModelList[index].docNo !=
+                                          null &&
+                                      controller
+                                              .receiptModelList[index].docNo !=
+                                          ''
+                                  ? Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'Doc No: '.tr,
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(controller
+                                              .receiptModelList[index].docNo
+                                              .toString()),
+                                        ],
                                       ),
-                                      Text(controller
-                                              .receiptModelList[index].notes ??
-                                          ''),
-                                    ],
-                                  ),
-                                )
-                              : const SizedBox()
-                        ],
-                      );
-                    })
+                                    )
+                                  : const SizedBox(),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Amount: '.tr,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text((controller.receiptModelList[index]
+                                                .payValue ??
+                                            0)
+                                        .toString()),
+                                  ],
+                                ),
+                              ),
+                              controller.receiptModelList[index].notes != ''
+                                  ? Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'Notes: '.tr,
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(controller
+                                                  .receiptModelList[index]
+                                                  .notes ??
+                                              ''),
+                                        ],
+                                      ),
+                                    )
+                                  : const SizedBox()
+                            ],
+                          );
+                        }),
+                  )
           ],
         ),
       ),

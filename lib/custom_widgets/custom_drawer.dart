@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import '../constants.dart';
 import '../controllers/auth_controller.dart';
 import '../controllers/home_controller.dart';
-import '../localization_herarchy/update_locale_button.dart';
+import '../localization_hierarchy/update_locale_button.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});

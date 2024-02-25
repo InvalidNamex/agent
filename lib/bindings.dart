@@ -3,7 +3,7 @@ import 'package:eit/controllers/customer_controller.dart';
 import 'package:eit/controllers/receipt_controller.dart';
 import 'package:eit/controllers/sales_controller.dart';
 import 'package:eit/helpers/connectivity_controller.dart';
-import 'package:eit/localization_herarchy/localization_controller.dart';
+import 'package:eit/localization_hierarchy/localization_controller.dart';
 import 'package:get/get.dart';
 
 import 'controllers/home_controller.dart';

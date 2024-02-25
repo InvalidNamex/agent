@@ -45,7 +45,7 @@ void printScreen({required List<InvoiceItemModel> invoiceItems}) async {
             pw.Text('Invoice'.tr,
                 style: pw.TextStyle(fontSize: 24, font: arabicFont)),
             pw.SizedBox(height: 20),
-            pw.Table.fromTextArray(
+            pw.TableHelper.fromTextArray(
               headers: headers,
               data: data,
               border: pw.TableBorder.all(), // Apply border to the table
@@ -56,7 +56,7 @@ void printScreen({required List<InvoiceItemModel> invoiceItems}) async {
               cellStyle: pw.TextStyle(font: arabicFont),
               cellHeight: 30,
               // Set custom widths for specific columns
-              columnWidths: {
+              columnWidths: const {
                 0: pw.FlexColumnWidth(2), // Total
                 1: pw.FlexColumnWidth(1.5), // Tax
                 2: pw.FlexColumnWidth(1.5), // Discount

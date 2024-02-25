@@ -142,9 +142,10 @@ class Languages extends Translations {
           'Note: ': 'بيان: ',
           'Doc No: ': 'رقم المستند: ',
           'No Notes': 'لا توجد ملاحظات',
-          'Amount': 'الكمية',
+          'Amount': 'المبلغ',
           'Notes': 'ملاحظات',
           'Save Receipt': 'حفظ السند',
+          'Receipt Code: ': 'رقم السند: '
         },
       };
 }

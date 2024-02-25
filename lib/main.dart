@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:eit/constants.dart';
@@ -6,7 +5,6 @@ import 'package:eit/screens/receipt_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '/screens/home_screen.dart';
 import '/screens/index_screen.dart';
@@ -15,13 +13,10 @@ import '/screens/new_customer.dart';
 import '/screens/new_invoice.dart';
 import '/screens/splash_screen.dart';
 import 'bindings.dart';
-import 'localization_herarchy/lanugages.dart';
+import 'localization_hierarchy/lanugages.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (Platform.isAndroid) {
-    AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
-  }
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
   ));

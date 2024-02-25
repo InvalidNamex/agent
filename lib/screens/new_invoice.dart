@@ -11,7 +11,7 @@ import '../custom_widgets/add_item_dialog.dart';
 import '../custom_widgets/items_table.dart';
 import '../helpers/loader.dart';
 import '../helpers/toast.dart';
-import '../map_herarchy/location_service.dart';
+import '../map_hierarchy/location_service.dart';
 import '../models/customer_model.dart';
 import '../utilities/qr_scanner.dart';
 import '/controllers/customer_controller.dart';
