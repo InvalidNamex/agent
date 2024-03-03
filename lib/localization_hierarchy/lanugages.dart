@@ -145,7 +145,7 @@ class Languages extends Translations {
           'Amount': 'المبلغ',
           'Notes': 'ملاحظات',
           'Save Receipt': 'حفظ السند',
-          'Receipt Code: ': 'رقم السند: '
+          'Receipt Code: ': 'رقم السند: ',
         },
       };
 }

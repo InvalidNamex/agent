@@ -14,7 +14,7 @@ class ReceiptScreen extends GetView<ReceiptController> {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          Get.to(const NewReceipt());
+          Get.toNamed('/new-receipt');
         },
         icon: const Icon(Icons.add),
         label: Text('New Receipt'.tr),

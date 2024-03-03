@@ -43,6 +43,7 @@ class SalesController extends GetxController {
   double get grandTotal =>
       invoiceItemsList.fold(0, (sum, item) => sum + (item.total ?? 0));
   //todo: find getter and setter to set the value of the above variables
+
   RxList<ApiInvoiceItem> apiInvoiceItemList = RxList<ApiInvoiceItem>();
   RxList<ItemModel> customerItemsList = RxList<ItemModel>();
   RxBool isCustomerChosen = false.obs;

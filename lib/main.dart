@@ -1,7 +1,9 @@
 import 'dart:ui';
 
 import 'package:eit/constants.dart';
+import 'package:eit/screens/new_receipt.dart';
 import 'package:eit/screens/receipt_screen.dart';
+import 'package:eit/screens/stock_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -83,19 +85,25 @@ class MyApp extends StatelessWidget {
             name: '/index-screen',
             page: () => const IndexScreen(),
             binding: HomeBinding(),
-            transition: Transition.rightToLeft,
+            transition: Transition.fadeIn,
             transitionDuration: const Duration(milliseconds: 200)),
         GetPage(
             name: '/home-screen',
             page: () => const HomeScreen(),
             binding: HomeBinding(),
-            transition: Transition.leftToRight,
+            transition: Transition.rightToLeft,
             transitionDuration: const Duration(milliseconds: 200)),
         GetPage(
             name: '/receipt-screen',
             page: () => const ReceiptScreen(),
             binding: HomeBinding(),
             transition: Transition.leftToRight,
+            transitionDuration: const Duration(milliseconds: 200)),
+        GetPage(
+            name: '/stock-screen',
+            page: () => const StockScreen(),
+            binding: HomeBinding(),
+            transition: Transition.upToDown,
             transitionDuration: const Duration(milliseconds: 200)),
         GetPage(
             name: '/new-invoice',
@@ -106,6 +114,12 @@ class MyApp extends StatelessWidget {
         GetPage(
             name: '/new-customer',
             page: () => NewCustomer(),
+            binding: HomeBinding(),
+            transition: Transition.downToUp,
+            transitionDuration: const Duration(milliseconds: 300)),
+        GetPage(
+            name: '/new-receipt',
+            page: () => const NewReceipt(),
             binding: HomeBinding(),
             transition: Transition.downToUp,
             transitionDuration: const Duration(milliseconds: 300)),

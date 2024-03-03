@@ -112,6 +112,42 @@ class CustomDrawer extends StatelessWidget {
               textColor: darkColor,
               iconColor: darkColor,
               leading: Image.asset(
+                'assets/images/drawer_sells.png',
+                height: 30,
+                width: 30,
+              ),
+              title: Text(
+                'Receipt Vouchers'.tr,
+                style: const TextStyle(
+                    fontFamily: 'Cairo',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18),
+              ),
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.arrow_forward_ios),
+                  title: Text('View Receipt Vouchers'.tr),
+                  onTap: () {
+                    Get.back();
+                    Get.toNamed('/receipt-screen');
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.arrow_forward_ios),
+                  title: Text('Add Receipt Voucher'.tr),
+                  onTap: () {
+                    Get.back();
+                    Get.toNamed('/new-receipt');
+                  },
+                )
+              ],
+            ),
+          ),
+          Card(
+            child: ExpansionTile(
+              textColor: darkColor,
+              iconColor: darkColor,
+              leading: Image.asset(
                 'assets/images/drawer_settings.png',
                 height: 30,
                 width: 30,

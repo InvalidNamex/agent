@@ -39,7 +39,7 @@ Widget homeTile({required String image, required String name}) {
             homeController.navigateToTab(2);
             break;
           case 'Stock':
-            Get.toNamed('');
+            Get.toNamed('/stock-screen');
             break;
           case 'Reports':
             homeController.navigateToTab(3);
