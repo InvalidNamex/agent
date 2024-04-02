@@ -34,33 +34,35 @@ class NewInvoice extends GetView<SalesController> {
     int payType = 1;
     return WillPopScope(
       onWillPop: () async {
-        final shouldPop = await showDialog<bool>(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('Are you sure?'.tr),
-            content: Text('Do you want to leave without saving?'.tr),
-            actions: [
-              TextButton(
-                child: Text('No'.tr),
-                onPressed: () {
-                  Get.back();
-                }, // Disallow pop
-              ),
-              TextButton(
-                child: Text('Yes'.tr),
-                onPressed: () {
-                  controller.invoiceNote.clear();
-                  controller.invoiceItemsList.clear();
-                  controller.isCustomerChosen(false);
-                  controller.resetValues();
-                  controller.addItemDropDownCustomer.value =
-                      CustomerModel(custName: 'Choose Customer'.tr);
-                  Get.offAllNamed('/index-screen');
-                },
-              ),
-            ],
-          ),
-        );
+        final shouldPop = controller.invoiceItemsList.isEmpty
+            ? true
+            : await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text('Are you sure?'.tr),
+                  content: Text('Do you want to leave without saving?'.tr),
+                  actions: [
+                    TextButton(
+                      child: Text('No'.tr),
+                      onPressed: () {
+                        Get.back();
+                      }, // Disallow pop
+                    ),
+                    TextButton(
+                      child: Text('Yes'.tr),
+                      onPressed: () {
+                        controller.invoiceNote.clear();
+                        controller.invoiceItemsList.clear();
+                        controller.isCustomerChosen(false);
+                        controller.resetValues();
+                        controller.addItemDropDownCustomer.value =
+                            CustomerModel(custName: 'Choose Customer'.tr);
+                        Get.offAllNamed('/index-screen');
+                      },
+                    ),
+                  ],
+                ),
+              );
         return shouldPop ?? false;
       },
       child: Scaffold(
@@ -399,6 +401,8 @@ class NewInvoice extends GetView<SalesController> {
                             controller.invoiceItemsList.clear();
                             controller.apiInvoiceItemList.clear();
                             controller.invoiceNote.clear();
+                            controller.resetValues();
+                            Get.offNamed('/index-screen');
                             controller.addItemDropDownCustomer(
                                 CustomerModel(custName: 'Choose Customer'.tr));
                             controller.isCustomerChosen(false);
