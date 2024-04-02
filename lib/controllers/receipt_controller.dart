@@ -88,7 +88,7 @@ class ReceiptController extends GetxController {
     SaveReceiptModel saveReceiptModel = SaveReceiptModel(
       payDate: date,
       custId: int.parse(newReceiptDropDownCustomer.value.custCode!),
-      salesRepId: user!.userID,
+      salesRepId: user!.saleRepID,
       payNote: notes.text,
       latitude: locationData?.latitude.toString(),
       longitude: locationData?.longitude.toString(),
@@ -100,7 +100,7 @@ class ReceiptController extends GetxController {
     String secretKey = config.values.first;
     final queryString =
         Uri.encodeComponent(jsonEncode(saveReceiptModel.toJson()));
-    //https://Mobiletest.itgenesis.app/SavePayTrans?ServiceKey=1357&PayInfo={"PayDate":"01/01/2022","CustID":304,"SalesRepID":2,"PayNote":"Noooootes xx","Latitude":"24.655305","Longitude":"46.707436","Amount":1000.5}
+    //!https://Mobiletest.itgenesis.app/SavePayTrans?ServiceKey=1357&PayInfo={"PayDate":"01/01/2022","CustID":304,"SalesRepID":2,"PayNote":"Noooootes xx","Latitude":"24.655305","Longitude":"46.707436","Amount":1000.5}
     final url = Uri.parse(
         'https://$apiURL/SavePayTrans?ServiceKey=$secretKey&PayInfo=$queryString');
     try {

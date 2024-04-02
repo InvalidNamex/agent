@@ -1,8 +1,10 @@
 import 'package:eit/controllers/auth_controller.dart';
 import 'package:eit/controllers/customer_controller.dart';
 import 'package:eit/controllers/receipt_controller.dart';
+import 'package:eit/controllers/reports_controller.dart';
 import 'package:eit/controllers/sales_controller.dart';
 import 'package:eit/controllers/stock_controller.dart';
+import 'package:eit/controllers/visits_controller.dart';
 import 'package:eit/helpers/connectivity_controller.dart';
 import 'package:eit/localization_hierarchy/localization_controller.dart';
 import 'package:get/get.dart';
@@ -17,6 +19,8 @@ class HomeBinding implements Bindings {
     Get.put(CustomerController());
     Get.put(ReceiptController());
     Get.put(StockController());
+    Get.put(ReportsController());
+    Get.put(VisitsController());
   }
 }
 

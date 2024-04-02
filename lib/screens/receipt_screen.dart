@@ -1,10 +1,9 @@
-import '/custom_widgets/date_filters.dart';
-import '/screens/new_receipt.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../constants.dart';
 import '../controllers/receipt_controller.dart';
+import '/custom_widgets/date_filters.dart';
 
 class ReceiptScreen extends GetView<ReceiptController> {
   const ReceiptScreen({super.key});
@@ -147,7 +146,32 @@ class ReceiptScreen extends GetView<ReceiptController> {
                                         ],
                                       ),
                                     )
-                                  : const SizedBox()
+                                  : const SizedBox(),
+                              Padding(
+                                padding: EdgeInsets.all(8),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'State: '.tr,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    controller.receiptModelList[index]
+                                                .transStateAcc ==
+                                            0
+                                        ? const Icon(
+                                            Icons.close,
+                                            color: Colors.red,
+                                          )
+                                        : const Icon(
+                                            Icons.check,
+                                            color: Colors.green,
+                                          )
+                                  ],
+                                ),
+                              )
                             ],
                           );
                         }),

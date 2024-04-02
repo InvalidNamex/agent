@@ -1,6 +1,7 @@
 import 'package:eit/controllers/auth_controller.dart';
 import 'package:eit/controllers/home_controller.dart';
 import 'package:eit/screens/home_screen.dart';
+import 'package:eit/screens/reports_screens/reports_screen.dart';
 import 'package:eit/screens/sales_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -75,11 +76,11 @@ class IndexScreen extends GetView<HomeController> {
             ),
             body: TabBarView(
               controller: controller.tabController,
-              children: [
-                const HomeScreen(),
-                const SalesScreen(),
-                const CustomersScreen(),
-                Container(),
+              children: const [
+                HomeScreen(),
+                SalesScreen(),
+                CustomersScreen(),
+                ReportsScreen(),
               ],
             ),
             endDrawer: const CustomDrawer(),

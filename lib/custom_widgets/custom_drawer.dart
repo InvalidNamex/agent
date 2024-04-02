@@ -148,6 +148,134 @@ class CustomDrawer extends StatelessWidget {
               textColor: darkColor,
               iconColor: darkColor,
               leading: Image.asset(
+                'assets/images/drawer_products.png',
+                height: 30,
+                width: 30,
+              ),
+              title: Text(
+                'Stock'.tr,
+                style: const TextStyle(
+                    fontFamily: 'Cairo',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18),
+              ),
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.arrow_forward_ios),
+                  title: Text('View Items Stock'.tr),
+                  onTap: () {
+                    Get.back();
+                    Get.toNamed('/stock-screen');
+                  },
+                ),
+              ],
+            ),
+          ),
+          Card(
+            child: ExpansionTile(
+              textColor: darkColor,
+              iconColor: darkColor,
+              leading: Image.asset(
+                'assets/images/drawer_inquiries.png',
+                height: 30,
+                width: 30,
+              ),
+              title: Text(
+                'Reports'.tr,
+                style: const TextStyle(
+                    fontFamily: 'Cairo',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18),
+              ),
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.arrow_forward_ios),
+                  title: Text('Products Sales Analysis'.tr),
+                  onTap: () {
+                    Get.back();
+                    Get.toNamed('/');
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.arrow_forward_ios),
+                  title: Text('Sales Analysis'.tr),
+                  onTap: () {
+                    Get.back();
+                    Get.toNamed('/');
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.arrow_forward_ios),
+                  title: Text('Customer Ledger'.tr),
+                  onTap: () {
+                    Get.back();
+                    Get.toNamed('/');
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.arrow_forward_ios),
+                  title: Text('Customers Information'.tr),
+                  onTap: () {
+                    Get.back();
+                    Get.toNamed('/');
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.arrow_forward_ios),
+                  title: Text('Visits List'.tr),
+                  onTap: () {
+                    Get.back();
+                    Get.toNamed('/visits-screen');
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.arrow_forward_ios),
+                  title: Text('Customers Balance'.tr),
+                  onTap: () {
+                    Get.back();
+                    Get.toNamed('/');
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.arrow_forward_ios),
+                  title: Text('Stock Management'.tr),
+                  onTap: () {
+                    Get.back();
+                    Get.toNamed('/');
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.arrow_forward_ios),
+                  title: Text('Product History'.tr),
+                  onTap: () {
+                    Get.back();
+                    Get.toNamed('/');
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.arrow_forward_ios),
+                  title: Text('Cash Balance'.tr),
+                  onTap: () {
+                    Get.back();
+                    Get.toNamed('/');
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.arrow_forward_ios),
+                  title: Text('Cash Flow'.tr),
+                  onTap: () {
+                    Get.back();
+                    Get.toNamed('/');
+                  },
+                ),
+              ],
+            ),
+          ),
+          Card(
+            child: ExpansionTile(
+              textColor: darkColor,
+              iconColor: darkColor,
+              leading: Image.asset(
                 'assets/images/drawer_settings.png',
                 height: 30,
                 width: 30,

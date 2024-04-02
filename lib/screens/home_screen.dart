@@ -48,7 +48,7 @@ Widget homeTile({required String image, required String name}) {
             Get.toNamed('/receipt-screen');
             break;
           case 'Visits Plans':
-            Get.toNamed('');
+            Get.toNamed('/visits-screen');
             break;
         }
       },

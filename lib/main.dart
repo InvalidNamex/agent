@@ -1,19 +1,22 @@
+import 'dart:io';
 import 'dart:ui';
 
-import 'package:eit/constants.dart';
-import 'package:eit/screens/new_receipt.dart';
-import 'package:eit/screens/receipt_screen.dart';
-import 'package:eit/screens/stock_screen.dart';
+import 'package:eit/screens/visits_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
+import '/constants.dart';
 import '/screens/home_screen.dart';
 import '/screens/index_screen.dart';
 import '/screens/login_screen.dart';
 import '/screens/new_customer.dart';
 import '/screens/new_invoice.dart';
+import '/screens/new_receipt.dart';
+import '/screens/receipt_screen.dart';
+import '/screens/reports_screens/reports_screen.dart';
 import '/screens/splash_screen.dart';
+import '/screens/stock_screen.dart';
 import 'bindings.dart';
 import 'localization_hierarchy/lanugages.dart';
 
@@ -24,7 +27,18 @@ void main() async {
   ));
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  //! this class overrides the check for certificate validation and logs user in even with expired certificate
+  HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());
+}
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
 }
 
 class MyCustomScrollBehavior extends MaterialScrollBehavior {
@@ -120,6 +134,18 @@ class MyApp extends StatelessWidget {
         GetPage(
             name: '/new-receipt',
             page: () => const NewReceipt(),
+            binding: HomeBinding(),
+            transition: Transition.downToUp,
+            transitionDuration: const Duration(milliseconds: 300)),
+        GetPage(
+            name: '/reports-screen',
+            page: () => const ReportsScreen(),
+            binding: HomeBinding(),
+            transition: Transition.downToUp,
+            transitionDuration: const Duration(milliseconds: 300)),
+        GetPage(
+            name: '/visits-screen',
+            page: () => const VisitsScreen(),
             binding: HomeBinding(),
             transition: Transition.downToUp,
             transitionDuration: const Duration(milliseconds: 300)),

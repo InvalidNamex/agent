@@ -4,6 +4,7 @@ import 'package:eit/helpers/loader.dart';
 import 'package:eit/models/api/api_stock_item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import '../constants.dart';
 
 class StockScreen extends GetView<StockController> {
@@ -93,20 +94,116 @@ class StockScreen extends GetView<StockController> {
                         padding: const EdgeInsets.all(3.0),
                         child: Card(
                           child: ListTile(
-                            leading: SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.6,
-                              child: Text(
-                                controller.stockItemList[index].itemName ?? '',
-                                overflow: TextOverflow.ellipsis,
+                              leading: SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.6,
+                                child: Text(
+                                  controller.stockItemList[index].itemName ??
+                                      '',
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
-                            ),
-                            title: Text(
-                                (controller.stockItemList[index].quantity ?? 0)
-                                    .roundToDouble()
-                                    .toString()),
-                            trailing: Text(
-                                controller.stockItemList[index].mainUnit ?? ''),
-                          ),
+                              title: Text(
+                                  (controller.stockItemList[index].quantity ??
+                                          0)
+                                      .roundToDouble()
+                                      .toString()),
+                              trailing: Text(
+                                  controller.stockItemList[index].mainUnit ??
+                                      ''),
+                              onTap: () {
+                                double? mainQty =
+                                    controller.stockItemList[index].quantity;
+                                double? subQty = (mainQty! % 1) *
+                                    controller
+                                        .stockItemList[index].mainUnitPack!;
+                                double? smallQty = (subQty % 1) *
+                                    controller
+                                        .stockItemList[index].subUnitPack!;
+                                Get.dialog(
+                                  AlertDialog(
+                                    content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Center(
+                                          child: Text(
+                                            controller.stockItemList[index]
+                                                    .itemName ??
+                                                '',
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        ListTile(
+                                          leading: Text(
+                                            'Unit'.tr,
+                                            style: const TextStyle(
+                                                color: accentColor),
+                                          ),
+                                          title: Text('Quantity'.tr,
+                                              style: const TextStyle(
+                                                  color: accentColor)),
+                                          trailing: Text('Stock'.tr,
+                                              style: const TextStyle(
+                                                  color: accentColor)),
+                                        ),
+                                        ListTile(
+                                          leading: Text(controller
+                                                  .stockItemList[index]
+                                                  .mainUnit ??
+                                              ''),
+                                          trailing: Text((!controller
+                                                      .stockItemList[index]
+                                                      .subUnit
+                                                      .isBlank!
+                                                  ? mainQty.toInt()
+                                                  : mainQty.toStringAsFixed(2))
+                                              .toString()),
+                                        ),
+                                        !controller.stockItemList[index].subUnit
+                                                .isBlank!
+                                            ? ListTile(
+                                                leading: Text(controller
+                                                        .stockItemList[index]
+                                                        .subUnit ??
+                                                    ''),
+                                                title: Text((controller
+                                                            .stockItemList[
+                                                                index]
+                                                            .mainUnitPack ??
+                                                        0)
+                                                    .toString()),
+                                                trailing: Text((!controller
+                                                            .stockItemList[
+                                                                index]
+                                                            .smallUnit
+                                                            .isBlank!
+                                                        ? subQty.toInt()
+                                                        : subQty
+                                                            .toStringAsFixed(2))
+                                                    .toString()),
+                                              )
+                                            : const SizedBox(),
+                                        !controller.stockItemList[index]
+                                                .smallUnit.isBlank!
+                                            ? ListTile(
+                                                leading: Text(controller
+                                                        .stockItemList[index]
+                                                        .smallUnit ??
+                                                    ''),
+                                                title: Text((controller
+                                                            .stockItemList[
+                                                                index]
+                                                            .subUnitPack ??
+                                                        0)
+                                                    .toString()),
+                                                trailing: Text(smallQty
+                                                    .toStringAsFixed(2)),
+                                              )
+                                            : const SizedBox(),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }),
                         ),
                       );
                     },

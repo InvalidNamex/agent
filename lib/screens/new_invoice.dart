@@ -10,6 +10,7 @@ import '../constants.dart';
 import '../custom_widgets/add_item_dialog.dart';
 import '../custom_widgets/items_table.dart';
 import '../helpers/loader.dart';
+import '../helpers/location_comparison.dart';
 import '../helpers/toast.dart';
 import '../map_hierarchy/location_service.dart';
 import '../models/customer_model.dart';
@@ -26,6 +27,8 @@ class NewInvoice extends GetView<SalesController> {
 
   @override
   Widget build(BuildContext context) {
+    final customerNameArgument =
+        Get.arguments != null ? Get.arguments['custName'] : null;
     final customerController = Get.find<CustomerController>();
     final homeController = Get.find<HomeController>();
     int payType = 1;
@@ -49,6 +52,7 @@ class NewInvoice extends GetView<SalesController> {
                   controller.invoiceNote.clear();
                   controller.invoiceItemsList.clear();
                   controller.isCustomerChosen(false);
+                  controller.resetValues();
                   controller.addItemDropDownCustomer.value =
                       CustomerModel(custName: 'Choose Customer'.tr);
                   Get.offAllNamed('/index-screen');
@@ -92,87 +96,95 @@ class NewInvoice extends GetView<SalesController> {
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Obx(
-                  () => customerController.customersList.isEmpty
-                      ? Text('Choose A Customer'.tr)
-                      : Card(
-                          child: ListTile(
-                            leading: const Icon(
-                              Icons.search,
-                              color: accentColor,
-                            ),
-                            title: DropdownSearch<CustomerModel>(
-                              popupProps:
-                                  const PopupProps.menu(showSearchBox: true),
-                              items: customerController.customersList,
-                              itemAsString: (customer) => customer.custName!,
-                              onChanged: (customer) async {
-                                try {
-                                  CustomerModel customerModel = customer!;
-                                  controller.customerModel = customer;
-                                  controller.isCustomerChosen(true);
-                                  if (controller.invoiceItemsList.isNotEmpty) {
-                                    Get.defaultDialog(
-                                      title:
-                                          'Items in the invoice will be deleted as you change customer.\n Do you wish to proceed?'
-                                              .tr,
-                                      titleStyle: const TextStyle(fontSize: 14),
-                                      content: Column(children: [
-                                        SizedBox(
-                                          height: 50,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              InkWell(
-                                                onTap: () async {
-                                                  controller.invoiceItemsList
-                                                      .clear();
-                                                  await controller
-                                                      .getFilteredItemsByCustomer(
-                                                          customerID:
-                                                              customerModel
-                                                                  .custCode!);
-                                                  Get.back();
-                                                },
-                                                child: Text(
-                                                  'Yes'.tr,
-                                                  style: const TextStyle(
-                                                      color: darkColor),
+                child: customerNameArgument == null
+                    ? Obx(
+                        () => customerController.customersList.isEmpty
+                            ? Text('Choose A Customer'.tr)
+                            : Card(
+                                child: ListTile(
+                                  leading: const Icon(
+                                    Icons.search,
+                                    color: accentColor,
+                                  ),
+                                  title: DropdownSearch<CustomerModel>(
+                                    popupProps: const PopupProps.menu(
+                                        showSearchBox: true),
+                                    items: customerController.customersList,
+                                    itemAsString: (customer) =>
+                                        customer.custName!,
+                                    onChanged: (customer) async {
+                                      try {
+                                        CustomerModel customerModel = customer!;
+                                        controller.customerModel = customer;
+                                        controller.isCustomerChosen(true);
+                                        if (controller
+                                            .invoiceItemsList.isNotEmpty) {
+                                          Get.defaultDialog(
+                                            title:
+                                                'Items in the invoice will be deleted as you change customer.\n Do you wish to proceed?'
+                                                    .tr,
+                                            titleStyle:
+                                                const TextStyle(fontSize: 14),
+                                            content: Column(children: [
+                                              SizedBox(
+                                                height: 50,
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    InkWell(
+                                                      onTap: () async {
+                                                        controller
+                                                            .invoiceItemsList
+                                                            .clear();
+                                                        await controller
+                                                            .getFilteredItemsByCustomer(
+                                                                customerID:
+                                                                    customerModel
+                                                                        .custCode!);
+                                                        Get.back();
+                                                      },
+                                                      child: Text(
+                                                        'Yes'.tr,
+                                                        style: const TextStyle(
+                                                            color: darkColor),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      width: 15,
+                                                    ),
+                                                    InkWell(
+                                                        onTap: () {
+                                                          Get.back();
+                                                        },
+                                                        child: Text(
+                                                          'No'.tr,
+                                                          style: const TextStyle(
+                                                              color: darkColor),
+                                                        ))
+                                                  ],
                                                 ),
-                                              ),
-                                              const SizedBox(
-                                                width: 15,
-                                              ),
-                                              InkWell(
-                                                  onTap: () {
-                                                    Get.back();
-                                                  },
-                                                  child: Text(
-                                                    'No'.tr,
-                                                    style: const TextStyle(
-                                                        color: darkColor),
-                                                  ))
-                                            ],
-                                          ),
-                                        )
-                                      ]),
-                                    );
-                                  } else {
-                                    await controller.getFilteredItemsByCustomer(
-                                        customerID: customerModel.custCode!);
-                                  }
-                                } catch (e) {
-                                  AppToasts.errorToast(
-                                      'Cannot find customer'.tr);
-                                }
-                              },
-                              selectedItem:
-                                  controller.addItemDropDownCustomer.value,
-                            ),
-                          ),
-                        ),
-                ),
+                                              )
+                                            ]),
+                                          );
+                                        } else {
+                                          await controller
+                                              .getFilteredItemsByCustomer(
+                                                  customerID:
+                                                      customerModel.custCode!);
+                                        }
+                                      } catch (e) {
+                                        AppToasts.errorToast(
+                                            'Cannot find customer'.tr);
+                                      }
+                                    },
+                                    selectedItem: controller
+                                        .addItemDropDownCustomer.value,
+                                  ),
+                                ),
+                              ),
+                      )
+                    : Text(customerNameArgument.toString()),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -380,13 +392,21 @@ class NewInvoice extends GetView<SalesController> {
                                         .toJson()) // Ensure correct conversion to JSON
                                     .toList());
                         if (controller.invoiceItemsList.isNotEmpty) {
-                          controller.saveInvoice(apiInvoiceModel);
-                          controller.invoiceItemsList.clear();
-                          controller.apiInvoiceItemList.clear();
-                          controller.invoiceNote.clear();
-                          controller.addItemDropDownCustomer(
-                              CustomerModel(custName: 'Choose Customer'.tr));
-                          controller.isCustomerChosen(false);
+                          if (await isWithinDistance(
+                              gpsLocation:
+                                  controller.customerModel!.gpsLocation!)) {
+                            controller.saveInvoice(apiInvoiceModel);
+                            controller.invoiceItemsList.clear();
+                            controller.apiInvoiceItemList.clear();
+                            controller.invoiceNote.clear();
+                            controller.addItemDropDownCustomer(
+                                CustomerModel(custName: 'Choose Customer'.tr));
+                            controller.isCustomerChosen(false);
+                          } else {
+                            AppToasts.errorToast(
+                                'You have to be within 500 meters range from client'
+                                    .tr);
+                          }
                         } else {
                           AppToasts.errorToast(
                               'Please add items before saving'.tr);

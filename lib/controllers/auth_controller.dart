@@ -27,23 +27,23 @@ class AuthController extends GetxController {
       required String secretKey}) async {
     final url = Uri.parse(
         'https://$apiURL/GetUserInfo?ServiceKey=$secretKey&u=$username&p=$password');
-    try {
-      final response = await http.get(url);
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (data['Success']) {
-          setUserToPrefs(userData: json.encode(data['data']));
-          userModel = UserModel.fromJson(data['data']);
-          Get.offNamed('/index-screen');
-        } else {
-          AppToasts.errorToast('Incorrect Credentials'.tr);
-        }
+    // try {
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      if (data['Success']) {
+        setUserToPrefs(userData: json.encode(data['data']));
+        userModel = UserModel.fromJson(data['data']);
+        Get.offNamed('/index-screen');
       } else {
-        AppToasts.errorToast('Connection Error'.tr);
+        AppToasts.errorToast('Incorrect Credentials'.tr);
       }
-    } catch (e) {
-      AppToasts.errorToast(e.toString());
+    } else {
+      AppToasts.errorToast('Connection Error'.tr);
     }
+    // } catch (e) {
+    //   AppToasts.errorToast(e.toString());
+    // }
   }
 
   Future<void> setApiConnectionToPrefs(

@@ -1,9 +1,10 @@
-import 'package:eit/helpers/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 
 import '../constants.dart';
 import '../controllers/auth_controller.dart';
+import '../helpers/toast.dart';
 
 class LoginScreen extends GetView<AuthController> {
   const LoginScreen({super.key});
@@ -157,6 +158,8 @@ class LoginScreen extends GetView<AuthController> {
                           controller.secretKeyTextController.clear();
                         } catch (e) {
                           AppToasts.errorToast(e.toString());
+                          Logger logger = Logger();
+                          logger.d(e);
                         }
                       }
                     },
