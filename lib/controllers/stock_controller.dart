@@ -38,7 +38,7 @@ class StockController extends GetxController {
             }
           }
         } else {
-          AppToasts.errorToast('Incorrect Credentials'.tr);
+          AppToasts.errorToast('No Stock Items Found'.tr);
         }
       } else {
         AppToasts.errorToast('Connection Error'.tr);

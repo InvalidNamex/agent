@@ -1,6 +1,9 @@
+import 'package:eit/controllers/auth_controller.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 
 Future<bool> isWithinDistance({required String gpsLocation}) async {
+  final authController = Get.find<AuthController>();
   Position userLocation = await Geolocator.getCurrentPosition();
   List<String> coordinates = gpsLocation.split('-');
   double distanceInMeters = await Geolocator.distanceBetween(
@@ -9,6 +12,7 @@ Future<bool> isWithinDistance({required String gpsLocation}) async {
     userLocation.latitude,
     userLocation.longitude,
   );
-
-  return distanceInMeters <= 500;
+  //get the distance from api
+  return distanceInMeters <=
+      int.parse(authController.sysInfoModel!.custLocAcu ?? '500');
 }

@@ -12,6 +12,7 @@ import 'package:logger/logger.dart';
 import '../custom_widgets/date_filters.dart';
 import '../models/api/api_receipt_model.dart';
 import '../models/api/save_api_receipt_model.dart';
+import '../screens/print_receipt.dart';
 import '/helpers/toast.dart';
 import '/models/user_model.dart';
 import 'auth_controller.dart';
@@ -52,19 +53,22 @@ class ReceiptController extends GetxController {
         if (response.statusCode == 200) {
           final data = json.decode(response.body);
           if (data['Success']) {
-            final List _x = json.decode(data['data']);
-            for (final x in _x) {
-              if (!unfilteredList.contains(x)) {
-                unfilteredList.add(ApiReceiptModel.fromJson(x));
+            if (data['data'] != 'Empty Date.') {
+              final List _x = json.decode(data['data']);
+              for (final x in _x) {
+                if (!unfilteredList.contains(x)) {
+                  unfilteredList.add(ApiReceiptModel.fromJson(x));
+                }
               }
-            }
-            if (unfilteredList.isNotEmpty) {
-              for (ApiReceiptModel x in unfilteredList) {
-                receiptModelList.add(x);
+              if (unfilteredList.isNotEmpty) {
+                for (ApiReceiptModel x in unfilteredList) {
+                  receiptModelList.add(x);
+                }
               }
             }
           } else {
             AppToasts.errorToast('Incorrect Credentials'.tr);
+            Logger().e('Incorrect Credentials, receiptController');
           }
         } else {
           AppToasts.errorToast('Connection Error'.tr);
@@ -94,7 +98,6 @@ class ReceiptController extends GetxController {
       longitude: locationData?.longitude.toString(),
       amount: double.tryParse(receiptAmount.text) ?? 0,
     );
-    print(saveReceiptModel.toJson());
     Map config = await authController.readApiConnectionFromPrefs();
     String apiURL = config.keys.first;
     String secretKey = config.values.first;
@@ -114,6 +117,11 @@ class ReceiptController extends GetxController {
           int receiptCode = decodedData['TransID'];
           await getReceiptVouchers();
           Get.back();
+          await generateReceiptPdf(
+              agent: user.userName ?? 'agent'.tr,
+              customerName:
+                  newReceiptDropDownCustomer.value.custName ?? 'Customer'.tr,
+              amount: saveReceiptModel.amount ?? 0);
           AppToasts.successToast(
               '${'Saved Successfully'.tr}\n ${'Receipt Code: '.tr}${receiptCode.toString()}');
         } else {

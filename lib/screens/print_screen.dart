@@ -1,80 +1,181 @@
+import 'package:eit/models/api/api_invoice_details_model.dart';
+import 'package:eit/models/api/api_po_master_model.dart';
+import 'package:eit/models/api/save_invoice/api_invoice_master_model.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import '../models/invoice_item_model.dart';
-
-void printScreen({required List<InvoiceItemModel> invoiceItems}) async {
+Future<void> printPOpreview(
+    {InvMasterModel? invMaster,
+    PoMasterModel? poMaster,
+    required List<InvDetailsModel> invoiceItems,
+    required bool isPO}) async {
+  String date = invMaster != null
+      ? invMaster.invDate != null
+          ? DateFormat('dd/MM/yyyy').format(invMaster.invDate!)
+          : '-'
+      : poMaster?.transDate != null
+          ? DateFormat('dd/MM/yyyy').format(poMaster!.transDate!)
+          : '-';
   Future<pw.Font> getArabicFont() async {
     final fontData = await rootBundle.load('assets/fonts/Cairo-Regular.ttf');
     return pw.Font.ttf(fontData);
   }
 
   Future<pw.Document> generateDocument() async {
+    bool isArabic = false;
+    final prefs = await SharedPreferences.getInstance();
+
+    const key = 'language';
+    String? value = prefs.getString(key);
+    if (value == 'ar') {
+      isArabic = true;
+    } else if (value == 'en') {
+      isArabic = false;
+    } else {
+      Get.deviceLocale;
+    }
     final doc = pw.Document();
-    // Reversed headers order to start with 'Total' and end with 'Item'
+    final arabicFont = await getArabicFont();
+
+    // Original headers and column widths
     final headers = [
       'Total'.tr,
-      'Tax'.tr,
-      'Discount'.tr,
       'Price'.tr,
       'Quantity'.tr,
       'Item'.tr,
     ];
-    final arabicFont = await getArabicFont();
 
-    // Reversed data order to match the headers
     final data = invoiceItems.map((item) {
       return [
-        item.total?.toStringAsFixed(2) ?? '',
-        item.tax?.toStringAsFixed(2) ?? '',
-        item.discount?.toStringAsFixed(2) ?? '',
+        (item.qty! * item.price!).toStringAsFixed(2),
         item.price?.toStringAsFixed(2) ?? '',
-        item.quantity?.toString() ?? '',
+        item.qty?.toStringAsFixed(2) ?? '',
         item.itemName ?? '',
       ];
     }).toList();
 
     doc.addPage(pw.Page(
-      textDirection: pw.TextDirection.rtl,
+      textDirection: isArabic ? pw.TextDirection.rtl : pw.TextDirection.ltr,
       build: (context) {
-        return pw.Column(
-          children: [
-            pw.Text('Invoice'.tr,
-                style: pw.TextStyle(fontSize: 24, font: arabicFont)),
-            pw.SizedBox(height: 20),
-            pw.TableHelper.fromTextArray(
-              headers: headers,
-              data: data,
-              border: pw.TableBorder.all(), // Apply border to the table
-              headerStyle: pw.TextStyle(
-                  fontWeight: pw.FontWeight.bold, font: arabicFont),
-              headerDecoration:
-                  const pw.BoxDecoration(color: PdfColors.grey300),
-              cellStyle: pw.TextStyle(font: arabicFont),
-              cellHeight: 30,
-              // Set custom widths for specific columns
-              columnWidths: const {
-                0: pw.FlexColumnWidth(2), // Total
-                1: pw.FlexColumnWidth(1.5), // Tax
-                2: pw.FlexColumnWidth(1.5), // Discount
-                3: pw.FlexColumnWidth(1), // Price
-                4: pw.FlexColumnWidth(1.5), // Quantity
-                5: pw.FlexColumnWidth(2), // Item
-              },
-              cellAlignments: {
-                0: pw.Alignment.centerRight,
-                1: pw.Alignment.centerRight,
-                2: pw.Alignment.centerRight,
-                3: pw.Alignment.centerRight,
-                4: pw.Alignment.centerRight,
-                5: pw.Alignment.centerRight,
-              },
+        return pw.Container(
+            decoration: pw.BoxDecoration(
+              border: pw.Border.all(color: PdfColors.black, width: 1),
             ),
-          ],
-        );
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Container(
+                  width: double.infinity,
+                  alignment: pw.Alignment.center,
+                  padding: const pw.EdgeInsets.all(5),
+                  color: PdfColors.black,
+                  child: pw.Text(isPO ? 'Purchase Order'.tr : 'Invoice'.tr,
+                      style: pw.TextStyle(
+                          fontSize: 24,
+                          font: arabicFont,
+                          color: PdfColors.white)),
+                ),
+                pw.SizedBox(height: 10),
+                pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.spaceEvenly,
+                    children: [
+                      pw.Column(
+                          crossAxisAlignment: pw.CrossAxisAlignment.start,
+                          children: [
+                            pw.Text(
+                                '''${'Serial:'.tr} ${invMaster == null ? poMaster?.transID ?? '-' : invMaster.serial ?? '-'}''',
+                                style: pw.TextStyle(
+                                    fontSize: 18, font: arabicFont)),
+                            pw.Text('''${'Date:'.tr} $date''',
+                                style: pw.TextStyle(
+                                    fontSize: 18, font: arabicFont)),
+                            pw.Text(
+                                '''${'Customer Name:'.tr} ${invMaster == null ? poMaster?.custName ?? '-' : invMaster.custName ?? '-'}''',
+                                style: pw.TextStyle(
+                                    fontSize: 18, font: arabicFont)),
+                          ]),
+                      pw.SizedBox(width: 5),
+                      pw.Column(
+                          crossAxisAlignment: pw.CrossAxisAlignment.start,
+                          children: [
+                            pw.Text(
+                                '''${invMaster == null ? 'PO No:'.tr : 'Invoice No:'.tr} ${invMaster == null ? poMaster?.transID ?? '-' : invMaster.serial ?? '-'}''',
+                                style: pw.TextStyle(
+                                    fontSize: 18, font: arabicFont)),
+                            pw.Text(
+                                '''${'Pay Type: '.tr} ${invMaster == null ? poMaster?.isCash == 1 ? 'Cash'.tr : 'Debit'.tr : invMaster.paymentType == 0 ? 'Cash'.tr : 'Debit'.tr}''',
+                                style: pw.TextStyle(
+                                    fontSize: 18, font: arabicFont)),
+                            pw.Text(
+                                '''${'Customer Code: '.tr} ${invMaster == null ? poMaster?.custCode ?? '-' : invMaster.custCode ?? '-'}''',
+                                style: pw.TextStyle(
+                                    fontSize: 18, font: arabicFont)),
+                          ]),
+                    ]),
+                pw.TableHelper.fromTextArray(
+                  context: context,
+                  headers: headers,
+                  data: data,
+                  border: pw.TableBorder.all(),
+                  headerStyle: pw.TextStyle(
+                      font: arabicFont, fontWeight: pw.FontWeight.bold),
+                  cellStyle: pw.TextStyle(font: arabicFont),
+                  cellAlignment: pw.Alignment.center,
+                  rowDecoration: const pw.BoxDecoration(color: PdfColors.white),
+                  oddRowDecoration:
+                      const pw.BoxDecoration(color: PdfColors.grey100),
+                  headerDecoration:
+                      const pw.BoxDecoration(color: PdfColors.grey300),
+                  columnWidths: const {
+                    0: pw.FlexColumnWidth(1.5),
+                    1: pw.FlexColumnWidth(1),
+                    2: pw.FlexColumnWidth(1),
+                    3: pw.FlexColumnWidth(3),
+                  },
+                ),
+                invMaster != null
+                    ? pw.Column(
+                        mainAxisAlignment: pw.MainAxisAlignment.start,
+                        crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+                        children: [
+                          pw.Text(
+                              '''${'Total:'.tr} ${invMaster?.invAmount?.toStringAsFixed(2) ?? '0'}''',
+                              style:
+                                  pw.TextStyle(fontSize: 18, font: arabicFont)),
+                          pw.Text(
+                              '''${'Discount:'.tr} ${invMaster.discBefore?.toStringAsFixed(2) ?? '0'}''',
+                              style:
+                                  pw.TextStyle(fontSize: 18, font: arabicFont)),
+                          pw.Text(
+                              '''${'Tax:'.tr} ${invMaster?.vat?.toStringAsFixed(2) ?? '0'}''',
+                              style:
+                                  pw.TextStyle(fontSize: 18, font: arabicFont)),
+                          pw.Text(
+                              '''${'Net Total:'.tr} ${(invMaster.invAmount ?? 0) + (invMaster?.vat ?? 0) - (invMaster?.discountCash ?? 0)}''',
+                              style:
+                                  pw.TextStyle(fontSize: 18, font: arabicFont)),
+                        ],
+                      )
+                    : pw.SizedBox(),
+                pw.Divider(),
+                pw.Padding(
+                  padding: const pw.EdgeInsets.all(5),
+                  child: pw.Text(
+                      '''${'Notes: '.tr} ${invMaster == null ? poMaster?.transNotes ?? '' : invMaster.invNote ?? ''}''',
+                      style: pw.TextStyle(fontSize: 18, font: arabicFont),
+                      maxLines: 2,
+                      textDirection: isArabic
+                          ? pw.TextDirection.rtl
+                          : pw.TextDirection.ltr,
+                      overflow: pw.TextOverflow.clip),
+                ),
+              ],
+            ));
       },
     ));
 

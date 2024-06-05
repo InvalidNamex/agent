@@ -4,11 +4,14 @@ import 'package:eit/helpers/toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/system_info_model.dart';
 import '../models/user_model.dart';
 
 class AuthController extends GetxController {
+  SystemInfoModel? sysInfoModel;
   final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
   final GlobalKey<FormState> serverFormKey = GlobalKey<FormState>();
   TextEditingController usernameTextController = TextEditingController();
@@ -27,23 +30,45 @@ class AuthController extends GetxController {
       required String secretKey}) async {
     final url = Uri.parse(
         'https://$apiURL/GetUserInfo?ServiceKey=$secretKey&u=$username&p=$password');
-    // try {
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       if (data['Success']) {
-        setUserToPrefs(userData: json.encode(data['data']));
+        await setUserToPrefs(userData: json.encode(data['data']));
         userModel = UserModel.fromJson(data['data']);
         Get.offNamed('/index-screen');
       } else {
         AppToasts.errorToast('Incorrect Credentials'.tr);
+        Logger().e('Incorrect Credentials, authController');
       }
     } else {
       AppToasts.errorToast('Connection Error'.tr);
     }
-    // } catch (e) {
-    //   AppToasts.errorToast(e.toString());
-    // }
+  }
+
+  Future<void> fetchSystemInfo(
+      {String pageNo = '-1', String pageSize = '1'}) async {
+    Map config = await readApiConnectionFromPrefs();
+    String apiURL = config.keys.first;
+    String secretKey = config.values.first;
+    //! hint: backend has wronged salesRepID for userID.
+    final url =
+        Uri.parse('https://$apiURL/GetSysOptions?ServiceKey=$secretKey');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['Success']) {
+          sysInfoModel = SystemInfoModel.fromJson(data['data']);
+        } else {
+          AppToasts.errorToast('Server Response Error'.tr);
+        }
+      } else {
+        AppToasts.errorToast(response.statusCode.toString());
+      }
+    } catch (e) {
+      Logger().e(e.toString());
+    }
   }
 
   Future<void> setApiConnectionToPrefs(
@@ -89,5 +114,11 @@ class AuthController extends GetxController {
   Future<void> clearDataFromPrefs(String key) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove(key);
+  }
+
+  @override
+  void onReady() async {
+    await fetchSystemInfo();
+    super.onReady();
   }
 }

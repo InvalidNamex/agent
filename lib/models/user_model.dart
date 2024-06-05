@@ -41,4 +41,19 @@ class UserModel {
         allowDateChange: json['AllowDateChange'] as bool?,
         allowAddCust: json['AllowAddCust'] as bool?,
       );
+
+  Map<String, dynamic> toJson() => {
+        'UserID': userID,
+        'UserName': userName,
+        'BrID': brID,
+        'SaleRepID': saleRepID,
+        'StoreID': storeID,
+        'CashAccID': cashAccID,
+        'AllowPriceChange': allowPriceChange,
+        'AllowPriceChangeIfZero': allowPriceChangeIfZero,
+        'AllowDiscChange': allowDiscChange,
+        'AllowQtyOverBal': allowQtyOverBal,
+        'AllowDateChange': allowDateChange,
+        'AllowAddCust': allowAddCust,
+      };
 }

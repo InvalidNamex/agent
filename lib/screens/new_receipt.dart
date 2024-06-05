@@ -6,14 +6,23 @@ import 'package:eit/helpers/toast.dart';
 import 'package:eit/models/customer_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 
 import '../constants.dart';
+import '../controllers/auth_controller.dart';
 
 class NewReceipt extends GetView<ReceiptController> {
   const NewReceipt({super.key});
   @override
   Widget build(BuildContext context) {
     final customerController = Get.find<CustomerController>();
+    final authController = Get.find<AuthController>();
+    List<CustomerModel> customersList =
+        authController.sysInfoModel?.custSys == '1'
+            ? customerController.customersListByRoute
+            : customerController.customersList;
+    final customerNameArgument =
+        Get.arguments != null ? Get.arguments['custName'] : null;
     return WillPopScope(
       onWillPop: () async {
         final shouldPop = await showDialog<bool>(
@@ -76,23 +85,25 @@ class NewReceipt extends GetView<ReceiptController> {
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Obx(
-                  () => customerController.customersList.isEmpty
-                      ? Text('Choose A Customer'.tr)
-                      : DropdownSearch<CustomerModel>(
-                          popupProps:
-                              const PopupProps.menu(showSearchBox: true),
-                          items: customerController.customersList,
-                          itemAsString: (customer) => customer.custName!,
-                          onChanged: (customer) {
-                            CustomerModel customerModel = customer!;
-                            controller
-                                .newReceiptDropDownCustomer(customerModel);
-                          },
-                          selectedItem:
-                              controller.newReceiptDropDownCustomer.value,
-                        ),
-                ),
+                child: customerNameArgument == null
+                    ? Obx(
+                        () => customersList.isEmpty
+                            ? Text('Choose A Customer'.tr)
+                            : DropdownSearch<CustomerModel>(
+                                popupProps:
+                                    const PopupProps.menu(showSearchBox: true),
+                                items: customersList,
+                                itemAsString: (customer) => customer.custName!,
+                                onChanged: (customer) {
+                                  CustomerModel customerModel = customer!;
+                                  controller.newReceiptDropDownCustomer(
+                                      customerModel);
+                                },
+                                selectedItem:
+                                    controller.newReceiptDropDownCustomer.value,
+                              ),
+                      )
+                    : Text(customerNameArgument.toString()),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -177,14 +188,27 @@ class NewReceipt extends GetView<ReceiptController> {
                     if (controller.receiptFormKey.currentState!.validate()) {
                       try {
                         Loading.load();
+                        if (customerNameArgument != null &&
+                            customerNameArgument != '') {
+                          final customerController =
+                              Get.find<CustomerController>();
+                          CustomerModel _customer = customerController
+                              .customersList
+                              .where((CustomerModel customer) =>
+                                  customer.custName == customerNameArgument)
+                              .first;
+                          controller.newReceiptDropDownCustomer.value =
+                              _customer;
+                        }
                         await controller.saveReceipt();
                         controller.newReceiptDropDownCustomer =
                             CustomerModel(custName: 'Choose Customer'.tr).obs;
-                        controller.receiptAmount.clear();
-                        controller.notes.clear();
                         Loading.dispose();
+                        controller.notes.clear();
+                        controller.receiptAmount.clear();
                       } catch (e) {
                         AppToasts.errorToast(e.toString());
+                        Logger().e(e.toString());
                       }
                     }
                   },

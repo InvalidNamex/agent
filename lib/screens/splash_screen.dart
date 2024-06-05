@@ -1,5 +1,5 @@
-import 'package:eit/constants.dart';
-import 'package:eit/controllers/auth_controller.dart';
+import '/constants.dart';
+import '/controllers/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -23,9 +23,7 @@ class SplashScreen extends GetView<AuthController> {
       }
     }
 
-    // Call the local function without using BuildContext after the async gap
-    Future.delayed(const Duration(seconds: 1), handlePermissions);
-
+    Future.delayed(const Duration(seconds: 2), handlePermissions);
     return Scaffold(
       backgroundColor: lightColor,
       body: Center(

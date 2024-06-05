@@ -63,8 +63,6 @@ class SalesAnalysis extends GetView<ReportsController> {
                               'Choose Customer'.tr
                           ? AppToasts.errorToast('اختر عميل أولًا')
                           : await controller.getSalesInvList();
-                      print(
-                          controller.reportsScreenCustomerModel.value.custName);
                     }),
                   ),
                   SizedBox(

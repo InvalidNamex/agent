@@ -18,6 +18,8 @@ import '../models/invoice_item_model.dart';
 import '../models/item_model.dart';
 
 class SalesController extends GetxController {
+  int transID = 0;
+  RxInt payType = 0.obs;
   Rx<DateTime> dateFromFilter = DateTime.now().obs;
   Rx<DateTime> dateToFilter = DateTime.now().obs;
   final itemQuantityFormKey = GlobalKey<FormState>();
@@ -42,7 +44,6 @@ class SalesController extends GetxController {
       invoiceItemsList.fold(0, (sum, item) => sum + (item.discount ?? 0));
   double get grandTotal =>
       invoiceItemsList.fold(0, (sum, item) => sum + (item.total ?? 0));
-  //todo: find getter and setter to set the value of the above variables
   void resetValues() {
     invoiceItemsList.forEach((item) {
       item.tax = 0;
@@ -152,7 +153,7 @@ class SalesController extends GetxController {
       AppToasts.errorToast('Error occurred, please contact support'.tr);
       isLoading(true);
       var logger = Logger();
-      logger.d(e.toString());
+      logger.e(e.toString());
     }
   }
 
@@ -166,45 +167,46 @@ class SalesController extends GetxController {
     }
   }
 
-  Future<void> saveInvoice(ApiSaveInvoiceModel invoice) async {
+  Future<int> saveInvoice(ApiSaveInvoiceModel invoice) async {
     Map config = await authController.readApiConnectionFromPrefs();
     String apiURL = config.keys.first;
     String secretKey = config.values.first;
-
-    final queryString = Uri.encodeComponent(jsonEncode(invoice.toJson()));
-    final url = Uri.parse(
-        'https://$apiURL/SaveInvTrans?ServiceKey=$secretKey&InvInfo=$queryString');
+    final url = Uri.parse('https://$apiURL/SaveInvTrans?ServiceKey=$secretKey');
     try {
       isLoading(true);
-      final response = await http.post(url);
+      final headers = {'Content-Type': 'application/json'};
+      final body = jsonEncode(invoice.toJson());
+      final response = await http.post(url, headers: headers, body: body);
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data['Success']) {
           final String dataString = '{${data['data']}}';
           final decodedData = json.decode(dataString);
-          int transID = decodedData['TransID'];
+          transID = decodedData['TransID'];
           AppToasts.successToast(
               '${'Saved Successfully'.tr}\n ${transID.toString()}');
           await getFilteredInvoices();
+          return transID;
         } else {
           AppToasts.errorToast('Error: ${data['Message']}');
+          Logger().e(response.statusCode);
+          Logger().e(response.body);
+          return 0;
         }
       } else {
         AppToasts.errorToast('Connection Error'.tr);
+        Logger().e(response.statusCode);
+        Logger().e(response.body);
+        return 0;
       }
     } catch (e) {
       AppToasts.errorToast('Error occurred, contact support'.tr);
       Logger logger = Logger();
-      logger.d(e.toString());
+      logger.e(e.toString());
+      return 0;
     } finally {
       isLoading(false);
     }
-  }
-
-  @override
-  void onInit() async {
-    dateFromFilter.value = firstOfJanuaryLastYear();
-    super.onInit();
   }
 
   @override

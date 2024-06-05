@@ -1,6 +1,9 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:eit/controllers/auth_controller.dart';
 import 'package:eit/controllers/home_controller.dart';
+import 'package:eit/controllers/reports_controller.dart';
+import 'package:eit/models/api/api_invoice_model.dart';
+import 'package:eit/screens/print_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -20,7 +23,6 @@ import '/controllers/sales_controller.dart';
 import '/custom_widgets/custom_drawer.dart';
 import '/models/api/save_invoice/api_save_invoice_model.dart';
 import '/models/item_model.dart';
-import '/screens/print_screen.dart';
 
 class NewInvoice extends GetView<SalesController> {
   const NewInvoice({super.key});
@@ -31,7 +33,11 @@ class NewInvoice extends GetView<SalesController> {
         Get.arguments != null ? Get.arguments['custName'] : null;
     final customerController = Get.find<CustomerController>();
     final homeController = Get.find<HomeController>();
-    int payType = 1;
+    final authController = Get.find<AuthController>();
+    List<CustomerModel> customersList =
+        authController.sysInfoModel?.custSys == '1'
+            ? customerController.customersListByRoute
+            : customerController.customersList;
     return WillPopScope(
       onWillPop: () async {
         final shouldPop = controller.invoiceItemsList.isEmpty
@@ -101,7 +107,7 @@ class NewInvoice extends GetView<SalesController> {
                 padding: const EdgeInsets.all(8.0),
                 child: customerNameArgument == null
                     ? Obx(
-                        () => customerController.customersList.isEmpty
+                        () => customersList.isEmpty
                             ? Text('Choose A Customer'.tr)
                             : Card(
                                 child: ListTile(
@@ -112,7 +118,7 @@ class NewInvoice extends GetView<SalesController> {
                                   title: DropdownSearch<CustomerModel>(
                                     popupProps: const PopupProps.menu(
                                         showSearchBox: true),
-                                    items: customerController.customersList,
+                                    items: customersList,
                                     itemAsString: (customer) =>
                                         customer.custName!,
                                     onChanged: (customer) async {
@@ -348,7 +354,7 @@ class NewInvoice extends GetView<SalesController> {
                             style:
                                 const TextStyle(color: darkColor, fontSize: 18),
                           ),
-                          Flexible(child: isCashDropDown(payType))
+                          Flexible(child: isCashDropDown(controller))
                         ],
                       )
                     : const SizedBox()),
@@ -366,62 +372,8 @@ class NewInvoice extends GetView<SalesController> {
                     ),
                   ),
                   onPressed: () async {
-                    try {
-                      Loading.load();
-                      LocationData? locationData =
-                          await LocationService().getLocationData();
-                      controller.longitude(locationData?.longitude);
-                      controller.latitude(locationData?.latitude);
-                      Loading.dispose();
-                      if ((controller.latitude.value != 0.0) ||
-                          (controller.longitude.value != 0.0)) {
-                        final authController = Get.find<AuthController>();
-                        DateTime now = DateTime.now();
-                        String formattedDate =
-                            DateFormat('dd/MM/yyyy').format(now);
-                        ApiSaveInvoiceModel apiInvoiceModel =
-                            ApiSaveInvoiceModel(
-                                invDate: formattedDate,
-                                custID: int.parse(
-                                    controller.customerModel!.custCode!),
-                                salesRepID:
-                                    authController.userModel!.saleRepID!,
-                                payType: payType,
-                                invNote: controller.invoiceNote.text,
-                                latitude: controller.latitude.toString(),
-                                longitude: controller.longitude.toString(),
-                                products: controller.apiInvoiceItemList
-                                    .map((item) => item
-                                        .toJson()) // Ensure correct conversion to JSON
-                                    .toList());
-                        if (controller.invoiceItemsList.isNotEmpty) {
-                          if (await isWithinDistance(
-                              gpsLocation:
-                                  controller.customerModel!.gpsLocation!)) {
-                            controller.saveInvoice(apiInvoiceModel);
-                            controller.invoiceItemsList.clear();
-                            controller.apiInvoiceItemList.clear();
-                            controller.invoiceNote.clear();
-                            controller.resetValues();
-                            Get.offNamed('/index-screen');
-                            controller.addItemDropDownCustomer(
-                                CustomerModel(custName: 'Choose Customer'.tr));
-                            controller.isCustomerChosen(false);
-                          } else {
-                            AppToasts.errorToast(
-                                'You have to be within 500 meters range from client'
-                                    .tr);
-                          }
-                        } else {
-                          AppToasts.errorToast(
-                              'Please add items before saving'.tr);
-                        }
-                      } else {
-                        AppToasts.errorToast('Unrecognized Location'.tr);
-                      }
-                    } catch (e) {
-                      AppToasts.errorToast('Please add items before saving'.tr);
-                    }
+                    await saveInvoice(
+                        payType: controller.payType.value, isPrint: false);
                   },
                   child: Text(
                     'Save'.tr,
@@ -441,10 +393,11 @@ class NewInvoice extends GetView<SalesController> {
                     ),
                   ),
                   onPressed: () async {
-                    printScreen(invoiceItems: controller.invoiceItemsList);
+                    await saveInvoice(
+                        payType: controller.payType.value, isPrint: true);
                   },
                   child: Text(
-                    'Print'.tr,
+                    'Save & Print'.tr,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -458,18 +411,101 @@ class NewInvoice extends GetView<SalesController> {
   }
 }
 
-Widget isCashDropDown(int payType) {
-  return Card(
-    child: DropdownSearch<String>(
-      items: ['Cash'.tr, 'Credit'.tr],
-      selectedItem: 'Select pay type'.tr,
-      onChanged: (value) async {
-        if (value == 'Cash'.tr) {
-          payType = 1;
+Widget isCashDropDown(SalesController controller) {
+  return Obx(() {
+    return DropdownButton<String>(
+      value: controller.payType.value == 0 ? 'Cash' : 'Credit',
+      items: [
+        DropdownMenuItem<String>(
+          value: 'Cash',
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            child: Text('Cash'.tr),
+          ),
+        ),
+        DropdownMenuItem<String>(
+            value: 'Credit',
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: Text('Credit'.tr),
+            )),
+      ],
+      onChanged: (value) {
+        if (value == 'Cash') {
+          controller.payType.value = 0;
         } else {
-          payType = 0;
+          controller.payType.value = 1;
         }
       },
-    ),
-  );
+    );
+  });
+}
+
+Future saveInvoice({required int payType, required bool isPrint}) async {
+  final controller = Get.find<SalesController>();
+  try {
+    Loading.load();
+    LocationData? locationData = await LocationService().getLocationData();
+    controller.longitude(locationData?.longitude);
+    controller.latitude(locationData?.latitude);
+    Loading.dispose();
+    if ((controller.latitude.value != 0.0) ||
+        (controller.longitude.value != 0.0)) {
+      final authController = Get.find<AuthController>();
+      DateTime now = DateTime.now();
+      String formattedDate = DateFormat('dd/MM/yyyy').format(now);
+      ApiSaveInvoiceModel apiInvoiceModel = ApiSaveInvoiceModel(
+          invDate: formattedDate,
+          custID: int.parse(controller.customerModel!.custCode!),
+          salesRepID: authController.userModel!.saleRepID!,
+          payType: payType,
+          invNote: controller.invoiceNote.text,
+          latitude: controller.latitude.toString(),
+          longitude: controller.longitude.toString(),
+          products: controller.apiInvoiceItemList
+              .map((item) => item.toJson()) // Ensure correct conversion to JSON
+              .toList());
+
+      if (controller.invoiceItemsList.isNotEmpty) {
+        if (await isWithinDistance(
+            gpsLocation: controller.customerModel!.gpsLocation!)) {
+          await controller.saveInvoice(apiInvoiceModel);
+          controller.invoiceItemsList.clear();
+          controller.apiInvoiceItemList.clear();
+          controller.invoiceNote.clear();
+          controller.resetValues();
+          controller.payType(0);
+          isPrint
+              ? await printPreview(transID: controller.transID)
+              : Get.offNamed('/index-screen');
+          // reset transID
+          controller.transID = 0;
+          controller.addItemDropDownCustomer(
+              CustomerModel(custName: 'Choose Customer'.tr));
+          controller.isCustomerChosen(false);
+        } else {
+          AppToasts.errorToast(
+              'You have to be within 500 meters range from client'.tr);
+        }
+      } else {
+        AppToasts.errorToast('Please add items before saving'.tr);
+      }
+    } else {
+      AppToasts.errorToast('Unrecognized Location'.tr);
+    }
+  } catch (e) {
+    AppToasts.errorToast('Please add items before saving'.tr);
+  }
+}
+
+//todo:continue
+Future<void> printPreview({required int transID}) async {
+  final reportsController = Get.find<ReportsController>();
+  await reportsController.getInvDetails(
+      apiInv: ApiInvoiceModel(transID: transID, sysInvID: 0));
+  Get.offNamed('/index-screen');
+  await printPOpreview(
+      poMaster: reportsController.poMaster,
+      invoiceItems: reportsController.salesInvDetails,
+      isPO: true);
 }

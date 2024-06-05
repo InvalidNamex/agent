@@ -167,6 +167,31 @@ class Languages extends Translations {
           'Net Total': 'صافي الاجمالي',
           'VAT': 'ضريبة القيمة المضافة',
           'Negative Visit': 'زيارة سلبية',
+          'Permission denied. Please enable storage permission.':
+              'تم رفض الإذن. يرجى تمكين إذن التخزين.',
+          'Purchase Order': 'أمر توريد',
+          'Save & Print': 'حفظ وطباعة',
+          'Proceed': 'نعم',
+          'Cancel': 'لا',
+          'Invoice': 'فاتورة',
+          'Invoice pending acceptance, proceed to print PO?':
+              'الفاتورة قيد الانتظار للموافقة، هل تريد طباعة أمر التوريد؟',
+          'No Stock Items Found': 'لا توجد أصناف متاحة',
+          'Total:': 'الإجمالي:',
+          'Net Total:': 'الصافي:',
+          'Tax:': 'الضريبة:',
+          'Discount:': 'الخصم:',
+          'Serial:': 'مسلسل الفاتورة:',
+          'Date:': 'التاريخ:',
+          'Customer Name:': 'اسم العميل:',
+          'PO No:': 'رقم أمر التوريد:',
+          'Invoice No:': 'رقم الفاتورة:',
+          'Customer Code:': 'كود العميل:',
+          'No host was found': 'اسم السيرفر خالي او غير صحيح',
+          'Saved': 'تم الحفظ',
+          'agent': 'المندوب',
+          'Date': 'التاريخ',
+          'Customer': 'العميل'
         },
       };
 }

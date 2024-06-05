@@ -1,10 +1,12 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:eit/controllers/customer_controller.dart';
 import 'package:eit/controllers/sales_controller.dart';
+import 'package:eit/screens/print_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../constants.dart';
+import '../controllers/reports_controller.dart';
 import '../custom_widgets/date_filters.dart';
 import '../helpers/loader.dart';
 import '../models/customer_model.dart';
@@ -138,7 +140,41 @@ class SalesScreen extends GetView<SalesController> {
                                 Row(children: [
                                   Card(
                                     child: IconButton(
-                                        onPressed: () {},
+                                        onPressed: () async {
+                                          final reportsController =
+                                              Get.find<ReportsController>();
+                                          bool isPO = await reportsController
+                                              .getInvDetails(
+                                                  apiInv: controller
+                                                      .apiInvList[index]);
+                                          if (isPO) {
+                                            Get.defaultDialog(
+                                                title: '',
+                                                middleText:
+                                                    'Invoice pending acceptance, proceed to print PO?'
+                                                        .tr,
+                                                textConfirm: 'Proceed'.tr,
+                                                textCancel: 'Cancel'.tr,
+                                                onConfirm: () async {
+                                                  Get.back();
+                                                  await printPOpreview(
+                                                      poMaster:
+                                                          reportsController
+                                                              .poMaster,
+                                                      invoiceItems:
+                                                          reportsController
+                                                              .salesInvDetails,
+                                                      isPO: isPO);
+                                                });
+                                          } else {
+                                            await printPOpreview(
+                                                invMaster:
+                                                    reportsController.invMaster,
+                                                invoiceItems: reportsController
+                                                    .salesInvDetails,
+                                                isPO: isPO);
+                                          }
+                                        },
                                         icon: Icon(
                                           Icons.print,
                                           color: darkColor.withOpacity(0.7),

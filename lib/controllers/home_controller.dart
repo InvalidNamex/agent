@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../helpers/toast.dart';
@@ -43,12 +44,14 @@ class HomeController extends GetxController
       return isCash;
     } catch (e) {
       AppToasts.errorToast('Unknown Server'.tr);
+      Logger().e(e.toString());
       return false;
     }
   }
 
   @override
   void onReady() async {
+    //todo revise
     isPayTypeCash(await readPayTypePref(boolName: 'isCash'));
     vatIncluded(await readPayTypePref(boolName: 'vatIncluded'));
     enableCustomerLimit(await readPayTypePref(boolName: 'enableCustomerLimit'));
@@ -60,7 +63,7 @@ class HomeController extends GetxController
   }
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
     tabController = TabController(length: 4, vsync: this);
   }

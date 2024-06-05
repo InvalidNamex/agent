@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:eit/screens/visits_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -17,6 +16,7 @@ import '/screens/receipt_screen.dart';
 import '/screens/reports_screens/reports_screen.dart';
 import '/screens/splash_screen.dart';
 import '/screens/stock_screen.dart';
+import '/screens/visits_screen.dart';
 import 'bindings.dart';
 import 'localization_hierarchy/lanugages.dart';
 
@@ -29,6 +29,7 @@ void main() async {
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   //! this class overrides the check for certificate validation and logs user in even with expired certificate
   HttpOverrides.global = MyHttpOverrides();
+  // await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
   runApp(const MyApp());
 }
 
@@ -55,17 +56,21 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    Locale? defaultLocale = Get.deviceLocale;
     return GetMaterialApp(
-      locale: Get.deviceLocale,
+      locale: const Locale('en', 'US'),
       translations: Languages(),
       fallbackLocale: const Locale('en', 'US'),
+      textDirection: TextDirection.ltr,
       title: 'EIT',
       initialRoute: '/',
       enableLog: true,
       theme: ThemeData(
           useMaterial3: false,
           fontFamily: 'Cairo',
-          appBarTheme: const AppBarTheme(backgroundColor: lightColor)),
+          appBarTheme: const AppBarTheme(
+              backgroundColor: lightColor,
+              iconTheme: IconThemeData(color: darkColor))),
       logWriterCallback: (text, {isError = false}) {
         if (isError) {
           Get.defaultDialog(

@@ -146,13 +146,13 @@ class CustomersScreen extends GetView<CustomerController> {
               }),
         ],
       ),
-      body: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: SingleChildScrollView(
-          child: Obx(
-            () => controller.customersList.isEmpty
-                ? loader()
-                : Table(
+      body: Obx(
+        () => controller.customersList.isEmpty
+            ? loader()
+            : SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: SingleChildScrollView(
+                  child: Table(
                     defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                     columnWidths: const {
                       0: IntrinsicColumnWidth(flex: 1),
@@ -163,8 +163,8 @@ class CustomersScreen extends GetView<CustomerController> {
                     border: TableBorder.all(width: 1.0, color: darkColor),
                     children: tableRowByCustomer(),
                   ),
-          ),
-        ),
+                ),
+              ),
       ),
     );
   }
