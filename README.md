@@ -1,16 +1,71 @@
-# eit
+## Installation
 
-agent app
+To get started with Agent, follow these steps:
 
-## Getting Started
+1. **Clone the repository**:
+    ```bash
+    git clone https://github.com/InvalidNamex/agent.git
+    cd agent
+    ```
 
-This project is a starting point for a Flutter application.
+2. **Install dependencies**:
+    ```bash
+    flutter pub get
+    ```
 
-A few resources to get you started if this is your first Flutter project:
+3. **Run the application**:
+    ```bash
+    flutter run
+    ```
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Project Structure
+agent/
+├── android/
+├── assets/
+│ └── images/
+├── ios/
+├── lib/
+│ ├── models/
+│ ├── screens/
+│ ├── services/
+│ ├── widgets/
+│ └── main.dart
+├── test/
+├── .env
+├── .gitignore
+├── pubspec.yaml
+└── README.md
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- **`android/`** and **`ios/`**: Platform-specific code.
+- **`assets/`**: Images and other assets.
+- **`lib/`**: Main application code, divided into models, screens, services, and widgets.
+- **`test/`**: Unit and widget tests.
+- **`.env`**: Environment variables.
+- **`pubspec.yaml`**: Project dependencies.
+
+## Contributing
+
+We welcome contributions! Please follow these steps to contribute:
+
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature-branch`).
+3. Make your changes and commit them (`git commit -m 'Add new feature'`).
+4. Push to the branch (`git push origin feature-branch`).
+5. Open a Pull Request.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Acknowledgements
+
+- Flutter framework by Google.
+- All contributors and users for their support and feedback.
+
+## Contact
+
+For any inquiries or support, please contact us at ahmed_91@zohomail.com.
+
+---
+
+Thank you for using Agent! We hope it helps you manage your tasks effectively.

@@ -85,8 +85,6 @@ class ReportsController extends GetxController {
     ApiInvoiceModel? apiInv,
   }) async {
     salesInvDetails.clear();
-    Logger().i(apiInv?.sysInvID);
-    Logger().i(apiInv?.transID);
     String? invID = apiInv?.sysInvID.toString() == '0'
         ? apiInv?.transID.toString()
         : apiInv?.sysInvID.toString();

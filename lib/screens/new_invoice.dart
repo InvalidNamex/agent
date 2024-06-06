@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
+import 'package:logger/logger.dart';
 
 import '../constants.dart';
 import '../custom_widgets/add_item_dialog.dart';
@@ -373,7 +374,9 @@ class NewInvoice extends GetView<SalesController> {
                   ),
                   onPressed: () async {
                     await saveInvoice(
-                        payType: controller.payType.value, isPrint: false);
+                        controller: controller,
+                        payType: controller.payType.value,
+                        isPrint: false);
                   },
                   child: Text(
                     'Save'.tr,
@@ -394,7 +397,9 @@ class NewInvoice extends GetView<SalesController> {
                   ),
                   onPressed: () async {
                     await saveInvoice(
-                        payType: controller.payType.value, isPrint: true);
+                        controller: controller,
+                        payType: controller.payType.value,
+                        isPrint: true);
                   },
                   child: Text(
                     'Save & Print'.tr,
@@ -441,8 +446,10 @@ Widget isCashDropDown(SalesController controller) {
   });
 }
 
-Future saveInvoice({required int payType, required bool isPrint}) async {
-  final controller = Get.find<SalesController>();
+Future saveInvoice(
+    {required int payType,
+    required bool isPrint,
+    required SalesController controller}) async {
   try {
     Loading.load();
     LocationData? locationData = await LocationService().getLocationData();
@@ -465,7 +472,6 @@ Future saveInvoice({required int payType, required bool isPrint}) async {
           products: controller.apiInvoiceItemList
               .map((item) => item.toJson()) // Ensure correct conversion to JSON
               .toList());
-
       if (controller.invoiceItemsList.isNotEmpty) {
         if (await isWithinDistance(
             gpsLocation: controller.customerModel!.gpsLocation!)) {
@@ -495,6 +501,7 @@ Future saveInvoice({required int payType, required bool isPrint}) async {
     }
   } catch (e) {
     AppToasts.errorToast('Please add items before saving'.tr);
+    Logger().e(e);
   }
 }
 

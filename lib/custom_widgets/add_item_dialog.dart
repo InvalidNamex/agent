@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 
 import '../constants.dart';
 import '../controllers/sales_controller.dart';
@@ -237,14 +238,17 @@ void itemQtyPopUp(ItemModel item, SalesController controller) {
                   itemName: item.itemName,
                   quantity:
                       '${controller.mainQty.text.isEmpty ? '' : '${item.mainUnit}: ${controller.mainQty.text}'}${controller.subQty.text.isEmpty ? '' : '\n${item.subUnit}: ${controller.subQty.text}'}${controller.smallQty.text.isEmpty ? '' : '\n${item.smallUnit}: ${controller.smallQty.text}'}',
-                  price: (item.price ?? 0).roundToDouble(),
-                  discount: itemTotalDiscount.value,
-                  tax: itemTotalTax.value,
+                  price: double.parse(
+                      (item.price ?? 0).roundToDouble().toStringAsFixed(2)),
+                  discount:
+                      double.parse(itemTotalDiscount.value.toStringAsFixed(2)),
+                  tax: double.parse(itemTotalTax.value.toStringAsFixed(2)),
                   total: ((itemTotalPrice.value - itemTotalDiscount.value) +
                           itemTotalTax.value)
                       .roundToDouble(),
                 );
                 controller.invoiceItemsList.add(invItemModel);
+                Logger().i(invItemModel.toJson().toString());
                 ApiInvoiceItem apiInvoiceItem = ApiInvoiceItem(
                     itemId: item.id!,
                     price: (item.price ?? 0),
