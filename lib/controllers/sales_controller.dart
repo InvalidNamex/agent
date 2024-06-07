@@ -167,7 +167,8 @@ class SalesController extends GetxController {
     }
   }
 
-  Future<int> saveInvoice(ApiSaveInvoiceModel invoice) async {
+  Future<int> postInvoice(ApiSaveInvoiceModel invoice) async {
+    Logger().i(jsonEncode(invoice.toJson()));
     Map config = await authController.readApiConnectionFromPrefs();
     String apiURL = config.keys.first;
     String secretKey = config.values.first;

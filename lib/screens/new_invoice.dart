@@ -452,6 +452,8 @@ Future saveInvoice(
     required SalesController controller}) async {
   try {
     Loading.load();
+    Logger()
+        .i(controller.apiInvoiceItemList.map((item) => item.toJson()).toList());
     LocationData? locationData = await LocationService().getLocationData();
     controller.longitude(locationData?.longitude);
     controller.latitude(locationData?.latitude);
@@ -472,10 +474,11 @@ Future saveInvoice(
           products: controller.apiInvoiceItemList
               .map((item) => item.toJson()) // Ensure correct conversion to JSON
               .toList());
+
       if (controller.invoiceItemsList.isNotEmpty) {
         if (await isWithinDistance(
             gpsLocation: controller.customerModel!.gpsLocation!)) {
-          await controller.saveInvoice(apiInvoiceModel);
+          await controller.postInvoice(apiInvoiceModel);
           controller.invoiceItemsList.clear();
           controller.apiInvoiceItemList.clear();
           controller.invoiceNote.clear();
@@ -505,7 +508,6 @@ Future saveInvoice(
   }
 }
 
-//todo:continue
 Future<void> printPreview({required int transID}) async {
   final reportsController = Get.find<ReportsController>();
   await reportsController.getInvDetails(
