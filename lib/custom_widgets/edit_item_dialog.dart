@@ -224,21 +224,25 @@ void itemEditQtyPopUp(InvoiceItemModel invoiceItemModel, ItemModel item,
                         ApiInvoiceItem apiInvoiceItem = ApiInvoiceItem(
                             itemId: item.id!,
                             price: (itemTotalPrice.value).roundToDouble(),
-                            quantity: (controller.mainQty.text != '0' &&
-                                        controller.mainQty.text.isNotEmpty
-                                    ? double.parse(controller.mainQty.text)
-                                    : 0.0) +
-                                (controller.subQty.text != '0' &&
-                                        controller.subQty.text.isNotEmpty
-                                    ? (double.parse(controller.subQty.text) /
-                                        item.mainUnitPack!)
-                                    : 0.0) +
-                                (controller.smallQty.text != '0' &&
-                                        controller.smallQty.text.isNotEmpty
-                                    ? ((double.parse(controller.smallQty.text) /
-                                            item.subUnitPack!) /
-                                        item.mainUnitPack!)
-                                    : 0.0),
+                            quantity: ((controller.mainQty.text != '0' &&
+                                            controller.mainQty.text.isNotEmpty
+                                        ? double.parse(controller.mainQty.text)
+                                        : 0.0) +
+                                    (controller.subQty.text != '0' &&
+                                            controller.subQty.text.isNotEmpty
+                                        ? (double.parse(
+                                                controller.subQty.text) /
+                                            item.mainUnitPack!)
+                                        : 0.0) +
+                                    (controller.smallQty.text != '0' &&
+                                            controller.smallQty.text.isNotEmpty
+                                        ? ((double.parse(
+                                                    controller.smallQty.text) /
+                                                item.subUnitPack!) /
+                                            item.mainUnitPack!)
+                                        : 0.0))
+                                //todo: delete the round and reset it to double
+                                .round(),
                             discountPercentage:
                                 (item.disc ?? 0).roundToDouble(),
                             vatPercentage: (item.vat ?? 0).roundToDouble());
