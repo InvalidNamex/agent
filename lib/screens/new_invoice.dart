@@ -10,6 +10,11 @@ import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:logger/logger.dart';
 
+import '/controllers/customer_controller.dart';
+import '/controllers/sales_controller.dart';
+import '/custom_widgets/custom_drawer.dart';
+import '/models/api/save_invoice/api_save_invoice_model.dart';
+import '/models/item_model.dart';
 import '../constants.dart';
 import '../custom_widgets/add_item_dialog.dart';
 import '../custom_widgets/items_table.dart';
@@ -19,11 +24,6 @@ import '../helpers/toast.dart';
 import '../map_hierarchy/location_service.dart';
 import '../models/customer_model.dart';
 import '../utilities/qr_scanner.dart';
-import '/controllers/customer_controller.dart';
-import '/controllers/sales_controller.dart';
-import '/custom_widgets/custom_drawer.dart';
-import '/models/api/save_invoice/api_save_invoice_model.dart';
-import '/models/item_model.dart';
 
 class NewInvoice extends GetView<SalesController> {
   const NewInvoice({super.key});
@@ -294,7 +294,7 @@ class NewInvoice extends GetView<SalesController> {
                       style: const TextStyle(color: darkColor, fontSize: 18),
                     ),
                     Text(
-                      controller.totalTax.toStringAsFixed(2),
+                      controller.totalTax.round().toString(),
                       style: const TextStyle(color: Colors.grey, fontSize: 18),
                     ),
                   ],
@@ -309,7 +309,7 @@ class NewInvoice extends GetView<SalesController> {
                       style: const TextStyle(color: darkColor, fontSize: 18),
                     ),
                     Text(
-                      controller.totalDiscount.toStringAsFixed(2),
+                      controller.totalDiscount.round().toString(),
                       style: const TextStyle(color: Colors.grey, fontSize: 18),
                     ),
                   ],
@@ -324,7 +324,7 @@ class NewInvoice extends GetView<SalesController> {
                       style: const TextStyle(color: darkColor, fontSize: 18),
                     ),
                     Text(
-                      controller.grandTotal.toStringAsFixed(2),
+                      controller.grandTotal.round().toString(),
                       style: const TextStyle(color: Colors.grey, fontSize: 18),
                     ),
                   ],

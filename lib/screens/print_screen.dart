@@ -44,7 +44,6 @@ Future<void> printPOpreview(
 
     // Original headers and column widths
     final headers = [
-      'Total'.tr,
       'Price'.tr,
       'Quantity'.tr,
       'Item'.tr,
@@ -52,7 +51,6 @@ Future<void> printPOpreview(
 
     final data = invoiceItems.map((item) {
       return [
-        (item.qty! * item.price!).toStringAsFixed(2),
         item.price?.toStringAsFixed(2) ?? '',
         item.qty?.toStringAsFixed(2) ?? '',
         item.itemName ?? '',
@@ -132,10 +130,9 @@ Future<void> printPOpreview(
                   headerDecoration:
                       const pw.BoxDecoration(color: PdfColors.grey300),
                   columnWidths: const {
-                    0: pw.FlexColumnWidth(1.5),
+                    0: pw.FlexColumnWidth(1),
                     1: pw.FlexColumnWidth(1),
-                    2: pw.FlexColumnWidth(1),
-                    3: pw.FlexColumnWidth(3),
+                    2: pw.FlexColumnWidth(3),
                   },
                 ),
                 invMaster != null
@@ -144,25 +141,21 @@ Future<void> printPOpreview(
                         crossAxisAlignment: pw.CrossAxisAlignment.stretch,
                         children: [
                           pw.Text(
-                              '''${'Total:'.tr} ${invMaster?.invAmount?.toStringAsFixed(2) ?? '0'}''',
-                              style:
-                                  pw.TextStyle(fontSize: 18, font: arabicFont)),
-                          pw.Text(
                               '''${'Discount:'.tr} ${invMaster.discBefore?.toStringAsFixed(2) ?? '0'}''',
                               style:
                                   pw.TextStyle(fontSize: 18, font: arabicFont)),
                           pw.Text(
-                              '''${'Tax:'.tr} ${invMaster?.vat?.toStringAsFixed(2) ?? '0'}''',
+                              '''${'Tax:'.tr} ${invMaster.vat?.toStringAsFixed(2) ?? '0'}''',
                               style:
                                   pw.TextStyle(fontSize: 18, font: arabicFont)),
                           pw.Text(
-                              '''${'Net Total:'.tr} ${(invMaster.invAmount ?? 0) + (invMaster?.vat ?? 0) - (invMaster?.discountCash ?? 0)}''',
+                              '''${'Net Total:'.tr} ${invMaster.invAmount?.toStringAsFixed(2) ?? '0'}''',
                               style:
                                   pw.TextStyle(fontSize: 18, font: arabicFont)),
+                          pw.Divider(),
                         ],
                       )
                     : pw.SizedBox(),
-                pw.Divider(),
                 pw.Padding(
                   padding: const pw.EdgeInsets.all(5),
                   child: pw.Text(

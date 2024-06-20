@@ -26,8 +26,8 @@ void itemQtyPopUp(ItemModel item, SalesController controller) {
         (item.mainUnitPack ?? 0);
     double totalQty = mainQty + subQty + smallQty;
     itemTotalPrice(totalQty * (item.price ?? 0));
-    itemTotalDiscount(
-        itemTotalPrice.value * (item.disc != null ? (item.disc! / 100) : 0));
+    itemTotalDiscount(itemTotalPrice.value *
+        (item.disc != null ? (item.disc!.round() / 100) : 0));
     itemTotalTax((itemTotalPrice.value - itemTotalDiscount.value) *
         (item.vat != null ? (item.vat! / 100) : 0));
   }

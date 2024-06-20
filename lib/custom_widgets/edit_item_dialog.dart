@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '/models/api/api_invoice_item.dart';
+import '/models/invoice_item_model.dart';
 import '../constants.dart';
 import '../controllers/sales_controller.dart';
 import '../models/item_model.dart';
-import '/models/api/api_invoice_item.dart';
-import '/models/invoice_item_model.dart';
 
 void itemEditQtyPopUp(InvoiceItemModel invoiceItemModel, ItemModel item,
     SalesController controller, BuildContext context) {
@@ -269,6 +269,8 @@ void itemEditQtyPopUp(InvoiceItemModel invoiceItemModel, ItemModel item,
                     child: ElevatedButton(
                       onPressed: () {
                         controller.invoiceItemsList.remove(invoiceItemModel);
+                        controller.apiInvoiceItemList
+                            .removeWhere((x) => x.itemId == item.id);
                         Get.back();
                       },
                       style:
