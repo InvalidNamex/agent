@@ -1,10 +1,11 @@
+import 'package:eit/custom_widgets/custom_appBar.dart';
+import 'package:eit/custom_widgets/custom_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../helpers/loader.dart';
-import '/constants.dart';
 import '/controllers/customer_controller.dart';
 import '/controllers/sales_controller.dart';
+import '../helpers/loader.dart';
 
 class VisitsScreen extends GetView<CustomerController> {
   const VisitsScreen({super.key});
@@ -14,13 +15,8 @@ class VisitsScreen extends GetView<CustomerController> {
     final noteTextController = TextEditingController();
     final _formKey = GlobalKey<FormState>();
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            'Routes'.tr,
-            style: const TextStyle(color: darkColor),
-          ),
-          centerTitle: true,
-        ),
+        appBar: customAppBar(text: 'Routes'.tr),
+        endDrawer: const CustomDrawer(),
         body: ListView.separated(
           itemBuilder: (context, index) => Card(
               child: ExpansionTile(

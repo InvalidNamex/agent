@@ -1,6 +1,8 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:eit/controllers/customer_controller.dart';
 import 'package:eit/controllers/receipt_controller.dart';
+import 'package:eit/custom_widgets/custom_appBar.dart';
+import 'package:eit/custom_widgets/custom_drawer.dart';
 import 'package:eit/helpers/loader.dart';
 import 'package:eit/helpers/toast.dart';
 import 'package:eit/models/customer_model.dart';
@@ -53,31 +55,8 @@ class NewReceipt extends GetView<ReceiptController> {
         return shouldPop ?? false;
       },
       child: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 65,
-          centerTitle: true,
-          iconTheme:
-              const IconThemeData(color: darkColor), // Setting the icon color
-          title: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              const SizedBox(
-                height: 15,
-              ),
-              Image.asset(
-                'assets/images/icon.png',
-                height: 25,
-                width: 60,
-              ),
-              FittedBox(
-                child: Text(
-                  'New Receipt'.tr,
-                  style: const TextStyle(color: darkColor),
-                ),
-              ),
-            ],
-          ),
-        ),
+        appBar: customAppBar(text: 'New Receipt'.tr),
+        endDrawer: const CustomDrawer(),
         body: Form(
           key: controller.receiptFormKey,
           child: Column(

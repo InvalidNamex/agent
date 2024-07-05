@@ -1,9 +1,11 @@
+import 'package:eit/custom_widgets/custom_appBar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../custom_widgets/custom_drawer.dart';
+import '/custom_widgets/date_filters.dart';
 import '../constants.dart';
 import '../controllers/receipt_controller.dart';
-import '/custom_widgets/date_filters.dart';
 
 class ReceiptScreen extends GetView<ReceiptController> {
   const ReceiptScreen({super.key});
@@ -19,32 +21,8 @@ class ReceiptScreen extends GetView<ReceiptController> {
         label: Text('New Receipt'.tr),
         backgroundColor: darkColor,
       ),
-      appBar: AppBar(
-        toolbarHeight: 65,
-        centerTitle: true,
-        backgroundColor: lightColor,
-        iconTheme:
-            const IconThemeData(color: darkColor), // Setting the icon color
-        title: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            const SizedBox(
-              height: 15,
-            ),
-            Image.asset(
-              'assets/images/icon.png',
-              height: 25,
-              width: 60,
-            ),
-            FittedBox(
-              child: Text(
-                'Receipt'.tr,
-                style: const TextStyle(color: darkColor),
-              ),
-            ),
-          ],
-        ),
-      ),
+      appBar: customAppBar(text: 'Receipt'.tr),
+      endDrawer: const CustomDrawer(),
       body: Obx(
         () => Column(
           children: [

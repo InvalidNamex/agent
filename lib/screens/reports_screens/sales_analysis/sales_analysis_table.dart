@@ -33,10 +33,12 @@ class SalesAnalysisTable extends GetView {
             DataColumn(
                 label: Text('Item Discount'.tr,
                     style: const TextStyle(color: lightColor))),
-            const DataColumn(
-                label: Text('VAT', style: TextStyle(color: lightColor))),
-            const DataColumn(
-                label: Text('Net Total', style: TextStyle(color: lightColor))),
+            DataColumn(
+                label:
+                    Text('VAT'.tr, style: const TextStyle(color: lightColor))),
+            DataColumn(
+                label: Text('Net Total'.tr,
+                    style: const TextStyle(color: lightColor))),
             DataColumn(
               label: Expanded(
                 child: Text('Customer Name'.tr,

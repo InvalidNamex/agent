@@ -1,7 +1,8 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:eit/controllers/auth_controller.dart';
 import 'package:eit/controllers/home_controller.dart';
-import 'package:eit/controllers/reports_controller.dart';
+import 'package:eit/controllers/reports_controllers/reports_controller.dart';
+import 'package:eit/custom_widgets/custom_appBar.dart';
 import 'package:eit/models/api/api_invoice_model.dart';
 import 'package:eit/screens/print_screen.dart';
 import 'package:flutter/material.dart';
@@ -74,31 +75,8 @@ class NewInvoice extends GetView<SalesController> {
         return shouldPop ?? false;
       },
       child: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 65,
-          centerTitle: true,
-          backgroundColor: lightColor,
-          iconTheme:
-              const IconThemeData(color: darkColor), // Setting the icon color
-          title: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              const SizedBox(
-                height: 15,
-              ),
-              Image.asset(
-                'assets/images/icon.png',
-                height: 25,
-                width: 60,
-              ),
-              FittedBox(
-                child: Text(
-                  'New Invoice'.tr,
-                  style: const TextStyle(color: darkColor),
-                ),
-              ),
-            ],
-          ),
+        appBar: customAppBar(
+          text: 'New Invoice'.tr,
         ),
         body: SingleChildScrollView(
           child: Column(

@@ -1,3 +1,4 @@
+import 'package:eit/controllers/reports_controllers/reports_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -190,18 +191,10 @@ class CustomDrawer extends StatelessWidget {
               children: [
                 ListTile(
                   leading: const Icon(Icons.arrow_forward_ios),
-                  title: Text('Products Sales Analysis'.tr),
-                  onTap: () {
-                    Get.back();
-                    Get.toNamed('/');
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.arrow_forward_ios),
                   title: Text('Sales Analysis'.tr),
                   onTap: () {
                     Get.back();
-                    Get.toNamed('/');
+                    Get.toNamed('/sales-analysis');
                   },
                 ),
                 ListTile(
@@ -209,15 +202,15 @@ class CustomDrawer extends StatelessWidget {
                   title: Text('Customer Ledger'.tr),
                   onTap: () {
                     Get.back();
-                    Get.toNamed('/');
+                    Get.toNamed('/customer-ledger');
                   },
                 ),
                 ListTile(
                   leading: const Icon(Icons.arrow_forward_ios),
-                  title: Text('Customers Information'.tr),
+                  title: Text('Customers Balance'.tr),
                   onTap: () {
                     Get.back();
-                    Get.toNamed('/');
+                    Get.toNamed('/customers-balances');
                   },
                 ),
                 ListTile(
@@ -230,34 +223,44 @@ class CustomDrawer extends StatelessWidget {
                 ),
                 ListTile(
                   leading: const Icon(Icons.arrow_forward_ios),
-                  title: Text('Customers Balance'.tr),
-                  onTap: () {
-                    Get.back();
-                    Get.toNamed('/');
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.arrow_forward_ios),
-                  title: Text('Stock Management'.tr),
-                  onTap: () {
-                    Get.back();
-                    Get.toNamed('/');
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.arrow_forward_ios),
-                  title: Text('Product History'.tr),
-                  onTap: () {
-                    Get.back();
-                    Get.toNamed('/');
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.arrow_forward_ios),
                   title: Text('Cash Balance'.tr),
-                  onTap: () {
+                  onTap: () async {
+                    final _reportsController = Get.find<ReportsController>();
                     Get.back();
-                    Get.toNamed('/');
+                    await _reportsController
+                        .getCashBalance()
+                        .whenComplete(() => Get.bottomSheet(
+                              Container(
+                                decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(30),
+                                        topRight: Radius.circular(30)),
+                                    color: Colors.white),
+                                height: 150,
+                                child: Center(
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Text(
+                                        'Cash Balance'.tr,
+                                        style: const TextStyle(
+                                            fontSize: 16, color: darkColor),
+                                      ),
+                                      Text(
+                                        '${_reportsController.cashBalance.roundToDouble().toStringAsFixed(2)} L.E',
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 16),
+                                      ),
+                                      const SizedBox()
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              barrierColor: Colors.black.withOpacity(0.5),
+                              isScrollControlled: true,
+                            ));
                   },
                 ),
                 ListTile(
@@ -265,7 +268,7 @@ class CustomDrawer extends StatelessWidget {
                   title: Text('Cash Flow'.tr),
                   onTap: () {
                     Get.back();
-                    Get.toNamed('/');
+                    Get.toNamed('/cash-flow');
                   },
                 ),
               ],
@@ -289,7 +292,7 @@ class CustomDrawer extends StatelessWidget {
               ),
               children: [
                 ListTile(
-                  leading: const Icon(Icons.arrow_forward_ios),
+                  leading: const Icon(Icons.language_outlined),
                   title: Text('Language'.tr),
                   onTap: () {
                     showLocaleDialog();

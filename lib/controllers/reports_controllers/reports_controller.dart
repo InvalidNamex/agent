@@ -6,20 +6,22 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 
-import '../helpers/toast.dart';
-import '../models/api/api_invoice_details_model.dart';
-import '../models/api/api_invoice_model.dart';
-import '../models/api/api_po_master_model.dart';
-import '../models/api/api_sales_analysis_model.dart';
-import '../models/customer_model.dart';
-import '../models/user_model.dart';
 import '/controllers/auth_controller.dart';
 import '/helpers/loader.dart';
+import '../../helpers/toast.dart';
+import '../../models/api/api_invoice_details_model.dart';
+import '../../models/api/api_invoice_model.dart';
+import '../../models/api/api_po_master_model.dart';
+import '../../models/api/api_sales_analysis_model.dart';
+import '../../models/customer_ledger_model.dart';
+import '../../models/customer_model.dart';
+import '../../models/user_model.dart';
 
 class ReportsController extends GetxController {
   RxString payTypeFilter = 'All'.obs;
   Rx<DateTime> dateFromFilter = DateTime.now().obs;
   Rx<DateTime> dateToFilter = DateTime.now().obs;
+  RxDouble cashBalance = 0.0.obs;
   final authController = Get.find<AuthController>();
   Rx<CustomerModel> reportsScreenCustomerModel =
       CustomerModel(custName: 'Choose Customer'.tr).obs;
@@ -28,7 +30,8 @@ class ReportsController extends GetxController {
   InvMasterModel? invMaster;
   PoMasterModel? poMaster;
   RxList<InvDetailsModel> salesInvDetails = RxList<InvDetailsModel>();
-
+  RxList<CustomerLedgerModel> customerLedgerList =
+      RxList<CustomerLedgerModel>();
   Future<void> getSalesInvList(
       {String pageNo = '-1',
       String pageSize = '1',
@@ -36,6 +39,7 @@ class ReportsController extends GetxController {
       }) async {
     String dateFrom = DateFormat('dd/MM/yyyy').format(dateFromFilter.value);
     String dateTo = DateFormat('dd/MM/yyyy').format(dateToFilter.value);
+
     RxBool isLoading = false.obs;
     List<String?>? newDateFrom = dateFrom.split('T');
     List<String?>? newDateTo = dateTo.split('T');
@@ -133,5 +137,96 @@ class ReportsController extends GetxController {
       Loading.dispose();
     }
     return false;
+  }
+
+  Future<void> getCashBalance() async {
+    String dateTo = DateFormat('dd/MM/yyyy').format(dateToFilter.value);
+    RxBool isLoading = false.obs;
+    List<String?>? newDateTo = dateTo.split('T');
+    UserModel? user = authController.userModel;
+    Map config = await authController.readApiConnectionFromPrefs();
+    String apiURL = config.keys.first;
+    String secretKey = config.values.first;
+    if (user != null) {
+      //?https:\\mobiletest.itgenesis.app\GetCashBalance?ServiceKey=1357&CashAccID=2&dateto=30/10/2024
+      final url = Uri.parse(
+          'https://$apiURL/GetCashBalance?ServiceKey=$secretKey&CashAccID=${user.cashAccID}&dateto=${newDateTo.first}');
+      try {
+        isLoading(true);
+        final response = await http.get(url);
+        if (response.statusCode == 200) {
+          final data = json.decode(response.body);
+          if (data['Success']) {
+            if (data['dataCount'] > 0) {
+              final List _x = json.decode(data['data']);
+              cashBalance(_x.first['CashBalance']);
+            }
+          } else {
+            AppToasts.errorToast('Incorrect Credentials'.tr);
+            Logger().e('Incorrect Credentials, reportsController');
+          }
+        } else {
+          AppToasts.errorToast('Connection Error'.tr);
+        }
+        isLoading(false);
+      } catch (e) {
+        AppToasts.errorToast('Error occurred, contact support'.tr);
+        Logger logger = Logger();
+        logger.d(e.toString());
+      }
+    } else {
+      AppToasts.errorToast('User Unrecognized'.tr);
+    }
+  }
+
+  Future<void> getCustomerLedger(
+      {String pageNo = '-1',
+      String pageSize = '0',
+      required String custID}) async {
+    String dateTo = DateFormat('dd/MM/yyyy').format(dateToFilter.value);
+    String dateFrom = DateFormat('dd/MM/yyyy').format(dateFromFilter.value);
+    RxBool isLoading = false.obs;
+    List<String?>? newDateTo = dateTo.split('T');
+    List<String?>? newDateFrom = dateFrom.split('T');
+    UserModel? user = authController.userModel;
+    Map config = await authController.readApiConnectionFromPrefs();
+    String apiURL = config.keys.first;
+    String secretKey = config.values.first;
+    if (user != null) {
+      //? https://mobiletest.itgenesis.app/GetCustMove?ServiceKey=1357&CustID=304&datefrom=1/1/2022&dateto=30/10/2024&PageNo=-1&PageSize=0
+      final url = Uri.parse(
+          'https://$apiURL/GetCustMove?ServiceKey=$secretKey&CustID=${custID}&datefrom=${newDateFrom.first}&dateto=${newDateTo.first}&PageNo=$pageNo&PageSize=$pageSize');
+      try {
+        isLoading(true);
+        customerLedgerList.clear();
+        final response = await http.get(url);
+        if (response.statusCode == 200) {
+          final data = json.decode(response.body);
+          if (data['Success']) {
+            if (data['dataCount'] > 0) {
+              final List _x = json.decode(data['data']);
+              for (final x in _x) {
+                if (!customerLedgerList.contains(x)) {
+                  customerLedgerList.add(CustomerLedgerModel.fromJson(x));
+                }
+              }
+            }
+          } else {
+            AppToasts.errorToast('Incorrect Credentials'.tr);
+            Logger().e('Incorrect Credentials, reportsController');
+          }
+        } else {
+          Logger().e(response.body.toString());
+          AppToasts.errorToast('Connection Error'.tr);
+        }
+        isLoading(false);
+      } catch (e) {
+        AppToasts.errorToast('Error occurred, contact support'.tr);
+        Logger logger = Logger();
+        logger.d(e.toString());
+      }
+    } else {
+      AppToasts.errorToast('User Unrecognized'.tr);
+    }
   }
 }

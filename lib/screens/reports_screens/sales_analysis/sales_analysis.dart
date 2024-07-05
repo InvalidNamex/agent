@@ -1,6 +1,8 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:eit/constants.dart';
-import 'package:eit/controllers/reports_controller.dart';
+import 'package:eit/controllers/reports_controllers/reports_controller.dart';
+import 'package:eit/custom_widgets/custom_appBar.dart';
+import 'package:eit/custom_widgets/custom_drawer.dart';
 import 'package:eit/helpers/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -18,32 +20,8 @@ class SalesAnalysis extends GetView<ReportsController> {
   Widget build(BuildContext context) {
     final customerController = Get.find<CustomerController>();
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 65,
-        centerTitle: true,
-        backgroundColor: lightColor,
-        iconTheme:
-            const IconThemeData(color: darkColor), // Setting the icon color
-        title: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            const SizedBox(
-              height: 15,
-            ),
-            Image.asset(
-              'assets/images/icon.png',
-              height: 25,
-              width: 60,
-            ),
-            FittedBox(
-              child: Text(
-                'Products Sales Analysis'.tr,
-                style: const TextStyle(color: darkColor),
-              ),
-            ),
-          ],
-        ),
-      ),
+      appBar: customAppBar(text: 'Sales Analysis'.tr),
+      endDrawer: const CustomDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(children: [
@@ -120,7 +98,7 @@ class SalesAnalysis extends GetView<ReportsController> {
                       await controller.getSalesInvList(payType: value);
                     },
                   ),
-                  Text('Debit'.tr),
+                  Text('Credit'.tr),
                   Radio<String>(
                     value: 'All',
                     activeColor: accentColor,

@@ -1,15 +1,17 @@
-import 'package:eit/controllers/auth_controller.dart';
-import 'package:eit/controllers/customer_controller.dart';
-import 'package:eit/controllers/receipt_controller.dart';
-import 'package:eit/controllers/reports_controller.dart';
-import 'package:eit/controllers/sales_controller.dart';
-import 'package:eit/controllers/stock_controller.dart';
-import 'package:eit/controllers/visits_controller.dart';
-import 'package:eit/helpers/connectivity_controller.dart';
-import 'package:eit/localization_hierarchy/localization_controller.dart';
 import 'package:get/get.dart';
 
+import 'controllers/auth_controller.dart';
+import 'controllers/customer_controller.dart';
 import 'controllers/home_controller.dart';
+import 'controllers/receipt_controller.dart';
+import 'controllers/reports_controllers/cashflow_controller.dart';
+import 'controllers/reports_controllers/customer_reports_controller.dart';
+import 'controllers/reports_controllers/reports_controller.dart';
+import 'controllers/sales_controller.dart';
+import 'controllers/stock_controller.dart';
+import 'controllers/visits_controller.dart';
+import 'helpers/connectivity_controller.dart';
+import 'localization_hierarchy/localization_controller.dart';
 
 class HomeBinding implements Bindings {
   @override
@@ -21,6 +23,8 @@ class HomeBinding implements Bindings {
     Get.put(StockController());
     Get.put(ReportsController());
     Get.put(VisitsController());
+    Get.put(CashFlowController());
+    Get.put(CustomerReportsController());
   }
 }
 

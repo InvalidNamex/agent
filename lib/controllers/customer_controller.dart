@@ -12,6 +12,7 @@ import '../models/user_model.dart';
 import 'auth_controller.dart';
 
 class CustomerController extends GetxController {
+  //todo: here are the main options for the app
   /*
     MobileCustSys = 17
     MobileVersion = 18

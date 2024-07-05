@@ -5,18 +5,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalizationController extends GetxController {
   static LocalizationController instance = Get.find();
+
+  var textDirection = TextDirection.ltr.obs;
+
   Future<void> saveLocale(String language) async {
-    if (language == 'ar') {
-      final prefs = await SharedPreferences.getInstance();
-      const key = 'language';
-      const value = 'ar';
-      await prefs.setString(key, value);
-    } else {
-      final prefs = await SharedPreferences.getInstance();
-      const key = 'language';
-      const value = 'en';
-      await prefs.setString(key, value);
-    }
+    final prefs = await SharedPreferences.getInstance();
+    const key = 'language';
+    await prefs.setString(key, language);
   }
 
   Future<void> readLocale() async {
@@ -25,10 +20,15 @@ class LocalizationController extends GetxController {
     String? value = prefs.getString(key);
     if (value == 'ar') {
       Get.updateLocale(const Locale('ar', 'EG'));
+      textDirection.value = TextDirection.rtl;
     } else if (value == 'en') {
       Get.updateLocale(const Locale('en', 'US'));
+      textDirection.value = TextDirection.ltr;
     } else {
-      Get.deviceLocale;
+      Get.updateLocale(Get.deviceLocale!);
+      textDirection.value = Get.locale!.languageCode == 'ar'
+          ? TextDirection.rtl
+          : TextDirection.ltr;
     }
   }
 

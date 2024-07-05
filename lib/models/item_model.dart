@@ -13,6 +13,7 @@ class ItemModel {
   final String? smallUnit;
   final double? disc;
   final double? qtyBalance;
+  final int? itemClassID;
 
   ItemModel({
     this.id,
@@ -29,11 +30,15 @@ class ItemModel {
     this.smallUnit,
     this.disc,
     this.qtyBalance,
+    this.itemClassID,
   });
 
   factory ItemModel.fromJson(Map<String, dynamic> json) {
     return ItemModel(
       id: json['ID'] != null ? int.tryParse(json['ID'].toString()) : null,
+      itemClassID: json['ItemClassID'] != null
+          ? int.tryParse(json['ItemClassID'].toString())
+          : null,
       itemCode: json['ItemCode'] != null
           ? int.tryParse(json['ItemCode'].toString())
           : null,
@@ -64,6 +69,7 @@ class ItemModel {
 
   Map<String, dynamic> toJson() => {
         'ID': id?.toString(),
+        'ItemClassID': itemClassID,
         'ItemCode': itemCode?.toString(),
         'BarCode': barCode,
         'ItemName': itemName,

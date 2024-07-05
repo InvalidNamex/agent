@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:eit/screens/reports_screens/customer_ledger_screen.dart';
+import 'package:eit/screens/reports_screens/sales_analysis/sales_analysis.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -13,12 +15,16 @@ import '/screens/new_customer.dart';
 import '/screens/new_invoice.dart';
 import '/screens/new_receipt.dart';
 import '/screens/receipt_screen.dart';
+import '/screens/reports_screens/cash_flow_screen.dart';
+import '/screens/reports_screens/customers_reports/customers_balances_screen.dart';
 import '/screens/reports_screens/reports_screen.dart';
+import '/screens/reports_screens/stock_by_treeList.dart';
 import '/screens/splash_screen.dart';
 import '/screens/stock_screen.dart';
 import '/screens/visits_screen.dart';
 import 'bindings.dart';
 import 'localization_hierarchy/lanugages.dart';
+import 'localization_hierarchy/localization_controller.dart'; // Added import
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,12 +62,13 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    Locale? defaultLocale = Get.deviceLocale;
+    final LocalizationController localizationController =
+        Get.put(LocalizationController());
+
     return GetMaterialApp(
-      locale: const Locale('en', 'US'),
+      locale: Get.deviceLocale,
       translations: Languages(),
       fallbackLocale: const Locale('en', 'US'),
-      textDirection: TextDirection.ltr,
       title: 'EIT',
       initialRoute: '/',
       enableLog: true,
@@ -80,9 +87,8 @@ class MyApp extends StatelessWidget {
                 maxLines: 10,
                 overflow: TextOverflow.ellipsis,
               ));
-        } else {}
+        }
       },
-      // fallbackLocale: const Locale('ar', 'EG'),
       scrollBehavior: MyCustomScrollBehavior(),
       debugShowCheckedModeBanner: false,
       home: const SplashScreen(),
@@ -154,7 +160,49 @@ class MyApp extends StatelessWidget {
             binding: HomeBinding(),
             transition: Transition.downToUp,
             transitionDuration: const Duration(milliseconds: 300)),
+        GetPage(
+            name: '/cash-flow',
+            page: () => const CashFlowScreen(),
+            binding: HomeBinding(),
+            transition: Transition.downToUp,
+            transitionDuration: const Duration(milliseconds: 300)),
+        GetPage(
+            name: '/stock-by-tree-list',
+            page: () => const StockByTreeList(),
+            binding: HomeBinding(),
+            transition: Transition.circularReveal,
+            transitionDuration: const Duration(milliseconds: 300)),
+        GetPage(
+            name: '/customers-balances',
+            page: () => const CustomersBalancesScreen(),
+            binding: HomeBinding(),
+            transition: Transition.circularReveal,
+            transitionDuration: const Duration(milliseconds: 300)),
+        GetPage(
+            name: '/customer-ledger',
+            page: () => const CustomerLedgerScreen(),
+            binding: HomeBinding(),
+            transition: Transition.circularReveal,
+            transitionDuration: const Duration(milliseconds: 300)),
+        GetPage(
+            name: '/sales-analysis',
+            page: () => const SalesAnalysis(),
+            binding: HomeBinding(),
+            transition: Transition.circularReveal,
+            transitionDuration: const Duration(milliseconds: 300)),
       ],
+      builder: (context, child) {
+        return Obx(() {
+          return Directionality(
+            textDirection: localizationController.textDirection.value,
+            child: child!,
+          );
+        });
+      },
     );
   }
 }
+
+//todo: fix int <> double in invoice
+//todo: test app
+//todo: options review with MoSayed

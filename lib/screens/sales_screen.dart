@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../constants.dart';
-import '../controllers/reports_controller.dart';
+import '../controllers/reports_controllers/reports_controller.dart';
 import '../custom_widgets/date_filters.dart';
 import '../helpers/loader.dart';
 import '../models/customer_model.dart';

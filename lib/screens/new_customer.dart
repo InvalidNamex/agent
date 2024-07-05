@@ -1,4 +1,5 @@
 import 'package:eit/controllers/customer_controller.dart';
+import 'package:eit/custom_widgets/custom_appBar.dart';
 import 'package:eit/models/api/api_customer_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -7,6 +8,7 @@ import 'package:place_picker/place_picker.dart';
 
 import '../constants.dart';
 import '../controllers/auth_controller.dart';
+import '../custom_widgets/custom_drawer.dart';
 import '../helpers/toast.dart';
 
 class NewCustomer extends GetView<CustomerController> {
@@ -21,32 +23,8 @@ class NewCustomer extends GetView<CustomerController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 65,
-        centerTitle: true,
-        backgroundColor: lightColor,
-        iconTheme:
-            const IconThemeData(color: darkColor), // Setting the icon color
-        title: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            const SizedBox(
-              height: 15,
-            ),
-            Image.asset(
-              'assets/images/icon.png',
-              height: 25,
-              width: 60,
-            ),
-            FittedBox(
-              child: Text(
-                'New Customer'.tr,
-                style: const TextStyle(color: darkColor),
-              ),
-            ),
-          ],
-        ),
-      ),
+      appBar: customAppBar(text: 'New Customer'.tr),
+      endDrawer: const CustomDrawer(),
       body: Form(
         key: newCustomerForm,
         child: Padding(

@@ -66,7 +66,11 @@ Widget homeTile({required String image, required String name}) {
               const SizedBox(
                 height: 5,
               ),
-              Text(name.tr)
+              Text(
+                name.tr,
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              )
             ],
           )),
     ),

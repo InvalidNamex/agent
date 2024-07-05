@@ -1,5 +1,4 @@
-import 'package:eit/controllers/reports_controller.dart';
-import 'package:eit/screens/reports_screens/sales_analysis/sales_analysis.dart';
+import 'package:eit/controllers/reports_controllers/reports_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -34,18 +33,10 @@ class ReportsScreen extends GetView<ReportsController> {
             children: [
               ListTile(
                 leading: const Icon(Icons.arrow_forward_ios),
-                title: Text('Products Sales Analysis'.tr),
-                onTap: () {
-                  Get.back();
-                  Get.to(const SalesAnalysis());
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.arrow_forward_ios),
                 title: Text('Sales Analysis'.tr),
                 onTap: () {
                   Get.back();
-                  Get.toNamed('/');
+                  Get.toNamed('/sales-analysis');
                 },
               ),
             ],
@@ -76,28 +67,20 @@ class ReportsScreen extends GetView<ReportsController> {
                 title: Text('Customer Ledger'.tr),
                 onTap: () {
                   Get.back();
-                  Get.toNamed('/');
+                  Get.toNamed('/customer-ledger');
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.arrow_forward_ios),
-                title: Text('Customers Information'.tr),
+                title: Text('Customers Balances'.tr),
                 onTap: () {
                   Get.back();
-                  Get.toNamed('/');
+                  Get.toNamed('/customers-balances');
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.arrow_forward_ios),
                 title: Text('Visits List'.tr),
-                onTap: () {
-                  Get.back();
-                  Get.toNamed('/');
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.arrow_forward_ios),
-                title: Text('Customers Balance'.tr),
                 onTap: () {
                   Get.back();
                   Get.toNamed('/');
@@ -131,17 +114,17 @@ class ReportsScreen extends GetView<ReportsController> {
                 title: Text('Stock Management'.tr),
                 onTap: () {
                   Get.back();
-                  Get.toNamed('/');
+                  Get.toNamed('/stock-by-tree-list');
                 },
               ),
-              ListTile(
-                leading: const Icon(Icons.arrow_forward_ios),
-                title: Text('Product History'.tr),
-                onTap: () {
-                  Get.back();
-                  Get.toNamed('/');
-                },
-              ),
+              // ListTile(
+              //   leading: const Icon(Icons.arrow_forward_ios),
+              //   title: Text('Product History'.tr),
+              //   onTap: () {
+              //     Get.back();
+              //     Get.toNamed('/');
+              //   },
+              // ),
             ],
           ),
         ),
@@ -158,7 +141,7 @@ class ReportsScreen extends GetView<ReportsController> {
                   size: 20,
                 )),
             title: Text(
-              'Stock Reports'.tr,
+              'Cash Reports'.tr,
               style: const TextStyle(
                   fontFamily: 'Cairo',
                   fontWeight: FontWeight.w600,
@@ -168,9 +151,41 @@ class ReportsScreen extends GetView<ReportsController> {
               ListTile(
                 leading: const Icon(Icons.arrow_forward_ios),
                 title: Text('Cash Balance'.tr),
-                onTap: () {
-                  Get.back();
-                  Get.toNamed('/');
+                onTap: () async {
+                  await controller
+                      .getCashBalance()
+                      .whenComplete(() => Get.bottomSheet(
+                            Container(
+                              decoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(30),
+                                      topRight: Radius.circular(30)),
+                                  color: Colors.white),
+                              height: 150,
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Text(
+                                      'Cash Balance'.tr,
+                                      style: const TextStyle(
+                                          fontSize: 16, color: darkColor),
+                                    ),
+                                    Text(
+                                      '${controller.cashBalance.roundToDouble().toStringAsFixed(2)} L.E',
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 16),
+                                    ),
+                                    const SizedBox()
+                                  ],
+                                ),
+                              ),
+                            ),
+                            barrierColor: Colors.black.withOpacity(0.5),
+                            isScrollControlled: true,
+                          ));
                 },
               ),
               ListTile(
@@ -178,7 +193,7 @@ class ReportsScreen extends GetView<ReportsController> {
                 title: Text('Cash Flow'.tr),
                 onTap: () {
                   Get.back();
-                  Get.toNamed('/');
+                  Get.toNamed('/cash-flow');
                 },
               ),
             ],

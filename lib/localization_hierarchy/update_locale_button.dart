@@ -40,10 +40,13 @@ updateLocale(Locale locale) {
   Get.updateLocale(locale);
   if (locale == const Locale('ar', 'EG')) {
     localizationController.saveLocale('ar');
+    localizationController.textDirection.value = TextDirection.rtl;
   } else {
     localizationController.saveLocale('en');
+    localizationController.textDirection.value = TextDirection.ltr;
   }
 }
+
 /**
     ----------- Under GetMaterialApp --------------
     locale: Get.deviceLocale,
