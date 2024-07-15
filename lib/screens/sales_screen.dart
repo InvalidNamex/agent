@@ -1,5 +1,6 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:eit/controllers/customer_controller.dart';
+import 'package:eit/controllers/home_controller.dart';
 import 'package:eit/controllers/sales_controller.dart';
 import 'package:eit/screens/print_screen.dart';
 import 'package:flutter/material.dart';
@@ -167,9 +168,13 @@ class SalesScreen extends GetView<SalesController> {
                                                       isPO: isPO);
                                                 });
                                           } else {
+                                            final homeController =
+                                                Get.find<HomeController>();
                                             await printPOpreview(
                                                 invMaster:
                                                     reportsController.invMaster,
+                                                vatIncluded: homeController
+                                                    .vatIncluded.value,
                                                 invoiceItems: reportsController
                                                     .salesInvDetails,
                                                 isPO: isPO);
@@ -291,7 +296,6 @@ void showFilterBottomSheet(BuildContext context, SalesController controller) {
                   ElevatedButton(
                     onPressed: () {
                       controller.getFilteredInvoices(
-                        isFiltered: true,
                         amountFrom: double.parse(controller.priceFrom.text),
                         amountTo: double.parse(controller.priceTo.text),
                       );

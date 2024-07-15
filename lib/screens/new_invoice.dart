@@ -2,6 +2,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:eit/controllers/auth_controller.dart';
 import 'package:eit/controllers/home_controller.dart';
 import 'package:eit/controllers/reports_controllers/reports_controller.dart';
+import 'package:eit/controllers/visits_controller.dart';
 import 'package:eit/custom_widgets/custom_appBar.dart';
 import 'package:eit/models/api/api_invoice_model.dart';
 import 'package:eit/screens/print_screen.dart';
@@ -34,11 +35,12 @@ class NewInvoice extends GetView<SalesController> {
     final customerNameArgument =
         Get.arguments != null ? Get.arguments['custName'] : null;
     final customerController = Get.find<CustomerController>();
+    final visitsController = Get.find<VisitsController>();
     final homeController = Get.find<HomeController>();
     final authController = Get.find<AuthController>();
     List<CustomerModel> customersList =
         authController.sysInfoModel?.custSys == '1'
-            ? customerController.customersListByRoute
+            ? visitsController.customersListByRoute
             : customerController.customersList;
     return WillPopScope(
       onWillPop: () async {
@@ -488,11 +490,13 @@ Future saveInvoice(
 
 Future<void> printPreview({required int transID}) async {
   final reportsController = Get.find<ReportsController>();
+  final homeController = Get.find<HomeController>();
   await reportsController.getInvDetails(
       apiInv: ApiInvoiceModel(transID: transID, sysInvID: 0));
   Get.offNamed('/index-screen');
   await printPOpreview(
       poMaster: reportsController.poMaster,
       invoiceItems: reportsController.salesInvDetails,
+      vatIncluded: homeController.vatIncluded.value,
       isPO: true);
 }

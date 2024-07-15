@@ -1,8 +1,7 @@
-//todo: quantity to double
 class ApiInvoiceItem {
   final int itemId;
   final double price;
-  final int quantity;
+  final double quantity;
   final double discountPercentage;
   final double vatPercentage;
 
@@ -18,7 +17,7 @@ class ApiInvoiceItem {
     return ApiInvoiceItem(
       itemId: json['ItemID'] as int,
       price: json['Price'] as double,
-      quantity: json['Qty'] as int,
+      quantity: json['Qty'] as double,
       discountPercentage: json['DiscPer'] as double,
       vatPercentage: json['VATPer'] as double,
     );

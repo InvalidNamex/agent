@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 Future<void> printPOpreview(
     {InvMasterModel? invMaster,
     PoMasterModel? poMaster,
+    bool vatIncluded = false,
     required List<InvDetailsModel> invoiceItems,
     required bool isPO}) async {
   String date = invMaster != null
@@ -167,6 +168,18 @@ Future<void> printPOpreview(
                           : pw.TextDirection.ltr,
                       overflow: pw.TextOverflow.clip),
                 ),
+                vatIncluded
+                    ? pw.Padding(
+                        padding: const pw.EdgeInsets.all(5),
+                        child: pw.Text('vat included'.tr,
+                            style: pw.TextStyle(fontSize: 18, font: arabicFont),
+                            maxLines: 2,
+                            textDirection: isArabic
+                                ? pw.TextDirection.rtl
+                                : pw.TextDirection.ltr,
+                            overflow: pw.TextOverflow.clip),
+                      )
+                    : pw.SizedBox(),
               ],
             ));
       },

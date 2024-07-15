@@ -162,7 +162,7 @@ class StockTable extends StatelessWidget {
                         text: item.itemName ?? '', index: index, item: item),
                     customRowCell(
                         item: item,
-                        text: item.mainUnitPack?.toStringAsFixed(2) ?? '0',
+                        text: item.quantity?.toStringAsFixed(2) ?? '0',
                         index: index),
                     customRowCell(
                         item: item, text: item.mainUnit ?? '', index: index),

@@ -16,7 +16,7 @@ class SalesAnalysisTable extends GetView {
       child: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: DataTable(
-          headingRowColor: MaterialStateProperty.all<Color>(accentColor),
+          headingRowColor: WidgetStateProperty.all<Color>(accentColor),
           border: TableBorder.all(color: accentColor),
           columns: [
             DataColumn(
@@ -26,9 +26,6 @@ class SalesAnalysisTable extends GetView {
             )),
             DataColumn(
                 label: Text('Invoice Date'.tr,
-                    style: const TextStyle(color: lightColor))),
-            DataColumn(
-                label: Text('Invoice Discount'.tr,
                     style: const TextStyle(color: lightColor))),
             DataColumn(
                 label: Text('Item Discount'.tr,
@@ -53,7 +50,6 @@ class SalesAnalysisTable extends GetView {
             return DataRow(cells: [
               DataCell(Text((data.indexOf(item) + 1).toString())),
               DataCell(Text(dateConversion(item.invDate?.toString() ?? ''))),
-              DataCell(Text(item.invDiscount?.toString() ?? '')),
               DataCell(Text(item.itemDiscount?.toString() ?? '')),
               DataCell(Text(item.vat?.toString() ?? '')),
               DataCell(Text(item.netTotal?.toString() ?? '')),

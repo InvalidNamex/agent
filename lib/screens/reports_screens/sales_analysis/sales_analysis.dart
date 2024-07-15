@@ -85,16 +85,18 @@ class SalesAnalysis extends GetView<ReportsController> {
                     groupValue: controller.payTypeFilter.value,
                     onChanged: (value) async {
                       controller.payTypeFilter.value = value!;
+                      controller.salesAnalysisList.clear();
                       await controller.getSalesInvList(payType: value);
                     },
                   ),
                   Text('Cash'.tr),
                   Radio<String>(
                     activeColor: accentColor,
-                    value: 'Debit',
+                    value: 'Credit',
                     groupValue: controller.payTypeFilter.value,
                     onChanged: (value) async {
                       controller.payTypeFilter.value = value!;
+                      controller.salesAnalysisList.clear();
                       await controller.getSalesInvList(payType: value);
                     },
                   ),
@@ -105,6 +107,7 @@ class SalesAnalysis extends GetView<ReportsController> {
                     groupValue: controller.payTypeFilter.value,
                     onChanged: (value) async {
                       controller.payTypeFilter.value = value!;
+                      controller.salesAnalysisList.clear();
                       await controller.getSalesInvList(payType: value);
                     },
                   ),

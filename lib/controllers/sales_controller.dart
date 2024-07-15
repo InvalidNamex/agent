@@ -9,7 +9,6 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 
-import '../custom_widgets/date_filters.dart';
 import '../helpers/toast.dart';
 import '../models/api/api_invoice_item.dart';
 import '../models/api/api_invoice_model.dart';
@@ -61,14 +60,12 @@ class SalesController extends GetxController {
   final authController = Get.find<AuthController>();
   CustomerModel? customerModel;
 
-  Future<void> getFilteredInvoices(
-      {String pageNo = '-1',
-      String pageSize = '1',
-      double amountFrom = 0,
-      double amountTo = 1000000,
-      bool isFiltered = false}) async {
-    dateFromFilter.value =
-        isFiltered ? dateFromFilter.value : firstOfJanuaryLastYear();
+  Future<void> getFilteredInvoices({
+    String pageNo = '-1',
+    String pageSize = '1',
+    double amountFrom = 0,
+    double amountTo = 1000000,
+  }) async {
     String dateFrom = DateFormat('dd/MM/yyyy').format(dateFromFilter.value);
     String dateTo = DateFormat('dd/MM/yyyy').format(dateToFilter.value);
     UserModel? user = authController.userModel;
@@ -115,7 +112,7 @@ class SalesController extends GetxController {
         }
         isLoading(false);
       } catch (e) {
-        AppToasts.errorToast(e.toString());
+        Logger().e('Empty Data');
       }
     } else {
       AppToasts.errorToast('User Unrecognized'.tr);

@@ -15,54 +15,8 @@ class CustomersScreen extends GetView<CustomerController> {
 
   @override
   Widget build(BuildContext context) {
-    TableRow tableHeaders = TableRow(
-      children: [
-        Container(
-          color: accentColor,
-          alignment: Alignment.center,
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            'Name'.tr,
-            style: const TextStyle(
-                color: lightColor, fontSize: 12, fontWeight: FontWeight.bold),
-          ),
-        ),
-        Container(
-          color: accentColor,
-          alignment: Alignment.center,
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            'Phone'.tr,
-            style: const TextStyle(
-                color: lightColor, fontSize: 12, fontWeight: FontWeight.bold),
-          ),
-        ),
-        Container(
-          color: accentColor,
-          alignment: Alignment.center,
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            'Address'.tr,
-            style: const TextStyle(
-                color: lightColor, fontSize: 12, fontWeight: FontWeight.bold),
-          ),
-        ),
-        Container(
-          color: accentColor,
-          alignment: Alignment.center,
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            'Edit'.tr,
-            style: const TextStyle(
-                color: lightColor, fontSize: 12, fontWeight: FontWeight.bold),
-          ),
-        ),
-      ],
-    );
-
     RxList<TableRow> tableRowByCustomer() {
       RxList<TableRow> tableRows = RxList();
-      tableRows.insert(0, tableHeaders);
       for (final x in controller.customersList) {
         tableRows.add(TableRow(
           children: [
@@ -151,18 +105,89 @@ class CustomersScreen extends GetView<CustomerController> {
             ? loader()
             : SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: SingleChildScrollView(
-                  child: Table(
-                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                    columnWidths: const {
-                      0: IntrinsicColumnWidth(flex: 1),
-                      1: IntrinsicColumnWidth(flex: 1),
-                      2: IntrinsicColumnWidth(flex: 1),
-                      3: IntrinsicColumnWidth(flex: 1),
-                    },
-                    border: TableBorder.all(width: 1.0, color: darkColor),
-                    children: tableRowByCustomer(),
-                  ),
+                child: Column(
+                  children: [
+                    Table(
+                      defaultVerticalAlignment:
+                          TableCellVerticalAlignment.middle,
+                      children: [
+                        TableRow(
+                          children: [
+                            Container(
+                              color: accentColor,
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'Name'.tr,
+                                style: const TextStyle(
+                                    color: lightColor,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            Container(
+                              color: accentColor,
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'Phone'.tr,
+                                style: const TextStyle(
+                                    color: lightColor,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            Container(
+                              color: accentColor,
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'Address'.tr,
+                                style: const TextStyle(
+                                    color: lightColor,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            Container(
+                              color: accentColor,
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'Edit'.tr,
+                                style: const TextStyle(
+                                    color: lightColor,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                      columnWidths: const {
+                        0: FixedColumnWidth(200),
+                        1: FixedColumnWidth(200),
+                        2: FixedColumnWidth(250),
+                        3: FixedColumnWidth(100),
+                      },
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Table(
+                          defaultVerticalAlignment:
+                              TableCellVerticalAlignment.middle,
+                          columnWidths: const {
+                            0: FixedColumnWidth(200),
+                            1: FixedColumnWidth(200),
+                            2: FixedColumnWidth(250),
+                            3: FixedColumnWidth(100),
+                          },
+                          border: TableBorder.all(width: 1.0, color: darkColor),
+                          children: tableRowByCustomer(),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
       ),

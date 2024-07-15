@@ -30,7 +30,7 @@ Widget homeTile({required String image, required String name}) {
   return Padding(
     padding: const EdgeInsets.all(10.0),
     child: InkWell(
-      onTap: () {
+      onTap: () async {
         switch (name) {
           case 'Sales':
             homeController.navigateToTab(1);

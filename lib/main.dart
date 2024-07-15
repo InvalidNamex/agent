@@ -202,7 +202,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-//todo: fix int <> double in invoice
-//todo: test app
-//todo: options review with MoSayed

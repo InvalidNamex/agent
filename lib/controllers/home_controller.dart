@@ -51,7 +51,7 @@ class HomeController extends GetxController
 
   @override
   void onReady() async {
-    //todo revise
+    //todo revise options
     isPayTypeCash(await readPayTypePref(boolName: 'isCash'));
     vatIncluded(await readPayTypePref(boolName: 'vatIncluded'));
     enableCustomerLimit(await readPayTypePref(boolName: 'enableCustomerLimit'));

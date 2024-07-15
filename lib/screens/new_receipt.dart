@@ -1,6 +1,7 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:eit/controllers/customer_controller.dart';
 import 'package:eit/controllers/receipt_controller.dart';
+import 'package:eit/controllers/visits_controller.dart';
 import 'package:eit/custom_widgets/custom_appBar.dart';
 import 'package:eit/custom_widgets/custom_drawer.dart';
 import 'package:eit/helpers/loader.dart';
@@ -18,10 +19,11 @@ class NewReceipt extends GetView<ReceiptController> {
   @override
   Widget build(BuildContext context) {
     final customerController = Get.find<CustomerController>();
+    final visitsController = Get.find<VisitsController>();
     final authController = Get.find<AuthController>();
     List<CustomerModel> customersList =
         authController.sysInfoModel?.custSys == '1'
-            ? customerController.customersListByRoute
+            ? visitsController.customersListByRoute
             : customerController.customersList;
     final customerNameArgument =
         Get.arguments != null ? Get.arguments['custName'] : null;

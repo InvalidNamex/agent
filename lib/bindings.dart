@@ -22,7 +22,7 @@ class HomeBinding implements Bindings {
     Get.put(ReceiptController());
     Get.put(StockController());
     Get.put(ReportsController());
-    Get.put(VisitsController());
+    Get.lazyPut(() => VisitsController());
     Get.put(CashFlowController());
     Get.put(CustomerReportsController());
   }
