@@ -42,6 +42,7 @@ class NewInvoice extends GetView<SalesController> {
         authController.sysInfoModel?.custSys == '1'
             ? visitsController.customersListByRoute
             : customerController.customersList;
+    Logger().i('customer system: ${authController.sysInfoModel?.custSys}');
     return WillPopScope(
       onWillPop: () async {
         final shouldPop = controller.invoiceItemsList.isEmpty
@@ -430,62 +431,59 @@ Future saveInvoice(
     {required int payType,
     required bool isPrint,
     required SalesController controller}) async {
-  try {
-    Loading.load();
-    Logger()
-        .i(controller.apiInvoiceItemList.map((item) => item.toJson()).toList());
-    LocationData? locationData = await LocationService().getLocationData();
-    controller.longitude(locationData?.longitude);
-    controller.latitude(locationData?.latitude);
-    Loading.dispose();
-    if ((controller.latitude.value != 0.0) ||
-        (controller.longitude.value != 0.0)) {
-      final authController = Get.find<AuthController>();
-      DateTime now = DateTime.now();
-      String formattedDate = DateFormat('dd/MM/yyyy').format(now);
-      ApiSaveInvoiceModel apiInvoiceModel = ApiSaveInvoiceModel(
-          invDate: formattedDate,
-          custID: int.parse(controller.customerModel!.custCode!),
-          salesRepID: authController.userModel!.saleRepID!,
-          payType: payType,
-          invNote: controller.invoiceNote.text,
-          latitude: controller.latitude.toString(),
-          longitude: controller.longitude.toString(),
-          products: controller.apiInvoiceItemList
-              .map((item) => item.toJson()) // Ensure correct conversion to JSON
-              .toList());
+  // try {
+  Loading.load();
+  Logger()
+      .i(controller.apiInvoiceItemList.map((item) => item.toJson()).toList());
+  LocationData? locationData = await LocationService().getLocationData();
+  controller.longitude(locationData?.longitude);
+  controller.latitude(locationData?.latitude);
+  Loading.dispose();
+  if ((controller.latitude.value != 0.0) ||
+      (controller.longitude.value != 0.0)) {
+    final authController = Get.find<AuthController>();
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('dd/MM/yyyy').format(now);
+    ApiSaveInvoiceModel apiInvoiceModel = ApiSaveInvoiceModel(
+        invDate: formattedDate,
+        custID: int.parse(controller.customerModel!.custCode!),
+        salesRepID: authController.userModel!.saleRepID!,
+        payType: payType,
+        invNote: controller.invoiceNote.text,
+        latitude: controller.latitude.toString(),
+        longitude: controller.longitude.toString(),
+        products: controller.apiInvoiceItemList
+            .map((item) => item.toJson()) // Ensure correct conversion to JSON
+            .toList());
 
-      if (controller.invoiceItemsList.isNotEmpty) {
-        if (await isWithinDistance(
-            gpsLocation: controller.customerModel!.gpsLocation!)) {
-          await controller.postInvoice(apiInvoiceModel);
-          controller.invoiceItemsList.clear();
-          controller.apiInvoiceItemList.clear();
-          controller.invoiceNote.clear();
-          controller.resetValues();
-          controller.payType(0);
-          isPrint
-              ? await printPreview(transID: controller.transID)
-              : Get.offNamed('/index-screen');
-          // reset transID
-          controller.transID = 0;
-          controller.addItemDropDownCustomer(
-              CustomerModel(custName: 'Choose Customer'.tr));
-          controller.isCustomerChosen(false);
-        } else {
-          AppToasts.errorToast(
-              'You have to be within 500 meters range from client'.tr);
-        }
-      } else {
-        AppToasts.errorToast('Please add items before saving'.tr);
+    if (controller.invoiceItemsList.isNotEmpty) {
+      if (await isWithinDistance(
+          gpsLocation: controller.customerModel!.gpsLocation!)) {
+        await controller.postInvoice(apiInvoiceModel);
+        controller.invoiceItemsList.clear();
+        controller.apiInvoiceItemList.clear();
+        controller.invoiceNote.clear();
+        controller.resetValues();
+        controller.payType(0);
+        isPrint
+            ? await printPreview(transID: controller.transID)
+            : Get.offNamed('/index-screen');
+        // reset transID
+        controller.transID = 0;
+        controller.addItemDropDownCustomer(
+            CustomerModel(custName: 'Choose Customer'.tr));
+        controller.isCustomerChosen(false);
       }
     } else {
-      AppToasts.errorToast('Unrecognized Location'.tr);
+      AppToasts.errorToast('Please add items before saving'.tr);
     }
-  } catch (e) {
-    AppToasts.errorToast('Please add items before saving'.tr);
-    Logger().e(e);
+  } else {
+    AppToasts.errorToast('Unrecognized Location'.tr);
   }
+  // } catch (e) {
+  //   AppToasts.errorToast('Please add items before saving'.tr);
+  //   Logger().e(e);
+  // }
 }
 
 Future<void> printPreview({required int transID}) async {

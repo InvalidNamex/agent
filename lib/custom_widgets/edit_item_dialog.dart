@@ -12,6 +12,11 @@ void itemEditQtyPopUp(InvoiceItemModel invoiceItemModel, ItemModel item,
   RxDouble itemTotalPrice = 0.0.obs;
   RxDouble itemTotalDiscount = 0.0.obs;
   RxDouble itemTotalTax = 0.0.obs;
+  String getProcessedValue(String value) {
+    // Remove leading zeros
+    return value.replaceFirst(RegExp(r'^0+'), '');
+  }
+
   controller.mainQty.text = invoiceItemModel.mainQty != null
       ? invoiceItemModel.mainQty.toString()
       : '0';
@@ -61,7 +66,8 @@ void itemEditQtyPopUp(InvoiceItemModel invoiceItemModel, ItemModel item,
                         },
                         onChanged: (value) {
                           if (value.isNotEmpty) {
-                            controller.mainQty.text = value;
+                            final _x = getProcessedValue(value);
+                            controller.mainQty.text = _x;
                           } else {
                             controller.mainQty.text = 0.toString();
                           }
@@ -95,7 +101,8 @@ void itemEditQtyPopUp(InvoiceItemModel invoiceItemModel, ItemModel item,
                               },
                               onChanged: (value) {
                                 if (value.isNotEmpty) {
-                                  controller.subQty.text = value;
+                                  final _x = getProcessedValue(value);
+                                  controller.subQty.text = _x;
                                 } else {
                                   controller.subQty.text = 0.toString();
                                 }
@@ -131,7 +138,8 @@ void itemEditQtyPopUp(InvoiceItemModel invoiceItemModel, ItemModel item,
                               },
                               onChanged: (value) {
                                 if (value.isNotEmpty) {
-                                  controller.smallQty.text = value;
+                                  final _x = getProcessedValue(value);
+                                  controller.smallQty.text = _x;
                                 } else {
                                   controller.smallQty.text = 0.toString();
                                 }

@@ -185,7 +185,7 @@ class Languages extends Translations {
           'Invoice': 'فاتورة',
           'Invoice pending acceptance, proceed to print PO?':
               'الفاتورة قيد الانتظار للموافقة، هل تريد طباعة أمر التوريد؟',
-          'No Stock Items Found': 'لا توجد أصناف متاحة',
+          'Stock Items Unavailable': 'جرد المخزن غير متاح',
           'Total:': 'الإجمالي:',
           'Net Total:': 'الصافي:',
           'Tax:': 'الضريبة:',
@@ -207,6 +207,12 @@ class Languages extends Translations {
           'Date': 'التاريخ',
           'Customer': 'العميل',
           'Cash Flow Report': 'حركة حساب الخزينة',
+          'You are not within the allowed range to make this transaction':
+              'أنت لست ضمن المساحة المحددة لتنفيذ الفاتورة',
+          'Distance is not defined for comparison':
+              'لم نتمكن من مقارنة المسافة, هل موقع العميل معرف؟',
+          'Request timed out. Please try again.':
+              'فشل الاتصال بالانترنت, تأكد من وجود شبكة وحاول مرة أخرى'
         },
       };
 }

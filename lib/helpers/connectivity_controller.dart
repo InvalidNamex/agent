@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:eit/helpers/toast.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get/get.dart';
 
 class ConnectivityController extends GetxController {
@@ -26,15 +27,17 @@ class ConnectivityController extends GetxController {
     switch (result) {
       case ConnectivityResult.wifi:
         connectionStatus.value = "wifi";
-        AppToasts.successToast('Connected to WiFi');
+        Phoenix.rebirth(Get.context!);
+        Get.toNamed('/');
         break;
       case ConnectivityResult.mobile:
         connectionStatus.value = "data";
-        AppToasts.successToast('Connected to Mobile Data');
+        Phoenix.rebirth(Get.context!);
+        Get.toNamed('/');
         break;
       case ConnectivityResult.none:
         connectionStatus.value = "lost";
-        AppToasts.errorToast('Internet connection lost');
+        Get.offAllNamed('/no-connection');
         break;
       default:
         connectionStatus.value = "unknown";

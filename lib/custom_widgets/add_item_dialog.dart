@@ -14,6 +14,11 @@ void itemQtyPopUp(ItemModel item, SalesController controller) {
   controller.mainQty.text = '1';
   controller.subQty.text = '';
   controller.smallQty.text = '';
+  String getProcessedValue(String value) {
+    // Remove leading zeros
+    return value.replaceFirst(RegExp(r'^0+'), '');
+  }
+
   calculatePrice() {
     double mainQty = double.parse(
         controller.mainQty.text.isEmpty ? '0' : controller.mainQty.text);
@@ -55,7 +60,8 @@ void itemQtyPopUp(ItemModel item, SalesController controller) {
                 },
                 onChanged: (value) {
                   if (value.isNotEmpty) {
-                    controller.mainQty.text = value;
+                    final _x = getProcessedValue(value);
+                    controller.mainQty.text = _x;
                   } else {
                     controller.mainQty.text = 0.toString();
                   }
@@ -89,7 +95,8 @@ void itemQtyPopUp(ItemModel item, SalesController controller) {
                       },
                       onChanged: (value) {
                         if (value.isNotEmpty) {
-                          controller.subQty.text = value;
+                          final _x = getProcessedValue(value);
+                          controller.subQty.text = _x;
                         } else {
                           controller.subQty.text = 0.toString();
                         }
@@ -124,7 +131,8 @@ void itemQtyPopUp(ItemModel item, SalesController controller) {
                       },
                       onChanged: (value) {
                         if (value.isNotEmpty) {
-                          controller.smallQty.text = value;
+                          final _x = getProcessedValue(value);
+                          controller.smallQty.text = _x;
                         } else {
                           controller.smallQty.text = 0.toString();
                         }

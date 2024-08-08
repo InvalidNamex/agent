@@ -9,6 +9,30 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+double totalPrice({required List<InvDetailsModel> invoiceItems}) {
+  double _total = 0;
+  for (InvDetailsModel item in invoiceItems) {
+    _total += item.price ?? 0;
+  }
+  return _total;
+}
+
+double totalDiscount({required List<InvDetailsModel> invoiceItems}) {
+  double _total = 0;
+  for (InvDetailsModel item in invoiceItems) {
+    _total += item.discount ?? 0;
+  }
+  return _total;
+}
+
+double totalVat({required List<InvDetailsModel> invoiceItems}) {
+  double _total = 0;
+  for (InvDetailsModel item in invoiceItems) {
+    _total += item.vatAmount ?? 0;
+  }
+  return _total;
+}
+
 Future<void> printPOpreview(
     {InvMasterModel? invMaster,
     PoMasterModel? poMaster,
@@ -116,26 +140,29 @@ Future<void> printPOpreview(
                                     fontSize: 18, font: arabicFont)),
                           ]),
                     ]),
-                pw.TableHelper.fromTextArray(
-                  context: context,
-                  headers: headers,
-                  data: data,
-                  border: pw.TableBorder.all(),
-                  headerStyle: pw.TextStyle(
-                      font: arabicFont, fontWeight: pw.FontWeight.bold),
-                  cellStyle: pw.TextStyle(font: arabicFont),
-                  cellAlignment: pw.Alignment.center,
-                  rowDecoration: const pw.BoxDecoration(color: PdfColors.white),
-                  oddRowDecoration:
-                      const pw.BoxDecoration(color: PdfColors.grey100),
-                  headerDecoration:
-                      const pw.BoxDecoration(color: PdfColors.grey300),
-                  columnWidths: const {
-                    0: pw.FlexColumnWidth(1),
-                    1: pw.FlexColumnWidth(1),
-                    2: pw.FlexColumnWidth(3),
-                  },
-                ),
+                pw.Directionality(
+                    child: pw.TableHelper.fromTextArray(
+                      context: context,
+                      headers: headers,
+                      data: data,
+                      border: pw.TableBorder.all(),
+                      headerStyle: pw.TextStyle(
+                          font: arabicFont, fontWeight: pw.FontWeight.bold),
+                      cellStyle: pw.TextStyle(font: arabicFont),
+                      cellAlignment: pw.Alignment.center,
+                      rowDecoration:
+                          const pw.BoxDecoration(color: PdfColors.white),
+                      oddRowDecoration:
+                          const pw.BoxDecoration(color: PdfColors.grey100),
+                      headerDecoration:
+                          const pw.BoxDecoration(color: PdfColors.grey300),
+                      columnWidths: const {
+                        0: pw.FlexColumnWidth(1),
+                        1: pw.FlexColumnWidth(1),
+                        2: pw.FlexColumnWidth(3),
+                      },
+                    ),
+                    textDirection: pw.TextDirection.rtl),
                 invMaster != null
                     ? pw.Column(
                         mainAxisAlignment: pw.MainAxisAlignment.start,
@@ -156,7 +183,25 @@ Future<void> printPOpreview(
                           pw.Divider(),
                         ],
                       )
-                    : pw.SizedBox(),
+                    : pw.Column(
+                        mainAxisAlignment: pw.MainAxisAlignment.start,
+                        crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+                        children: [
+                          pw.Text(
+                              '''${'Discount:'.tr} ${totalDiscount(invoiceItems: invoiceItems).toStringAsFixed(2)}''',
+                              style:
+                                  pw.TextStyle(fontSize: 18, font: arabicFont)),
+                          pw.Text(
+                              '''${'Tax:'.tr} ${totalVat(invoiceItems: invoiceItems).toStringAsFixed(2)}''',
+                              style:
+                                  pw.TextStyle(fontSize: 18, font: arabicFont)),
+                          pw.Text(
+                              '''${'Net Total:'.tr} ${((totalPrice(invoiceItems: invoiceItems) - totalDiscount(invoiceItems: invoiceItems)) + totalVat(invoiceItems: invoiceItems)).toStringAsFixed(2)}''',
+                              style:
+                                  pw.TextStyle(fontSize: 18, font: arabicFont)),
+                          pw.Divider(),
+                        ],
+                      ),
                 pw.Padding(
                   padding: const pw.EdgeInsets.all(5),
                   child: pw.Text(

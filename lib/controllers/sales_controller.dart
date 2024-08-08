@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:eit/controllers/auth_controller.dart';
 import 'package:eit/models/customer_model.dart';
@@ -85,7 +87,7 @@ class SalesController extends GetxController {
         final response = await http.get(url);
         if (response.statusCode == 200) {
           final data = json.decode(response.body);
-          if (data['Success']) {
+          if (data['Success'] && data['data'] != 'Empty Data.') {
             final List _x = json.decode(data['data']);
             for (final x in _x) {
               if (!unfilteredList.contains(x)) {
@@ -104,8 +106,6 @@ class SalesController extends GetxController {
                 }
               }
             }
-          } else {
-            AppToasts.errorToast('Incorrect Credentials'.tr);
           }
         } else {
           AppToasts.errorToast('Connection Error'.tr);
@@ -197,6 +197,14 @@ class SalesController extends GetxController {
         Logger().e(response.body);
         return 0;
       }
+    } on TimeoutException catch (_) {
+      AppToasts.errorToast('Request timed out. Please try again.'.tr);
+      Logger().e('Request timed out');
+      return 0;
+    } on SocketException catch (e) {
+      AppToasts.errorToast('Request timed out. Please try again.'.tr);
+      Logger().e('SocketException: $e');
+      return 0;
     } catch (e) {
       AppToasts.errorToast('Error occurred, contact support'.tr);
       Logger logger = Logger();

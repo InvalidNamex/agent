@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:eit/models/customer_model.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:logger/logger.dart';
 
 import '../helpers/toast.dart';
 import '../models/api/api_customer_model.dart';
@@ -37,6 +38,7 @@ class CustomerController extends GetxController {
               customersList.add(CustomerModel.fromJson(x));
             }
           }
+          Logger().i('Customer List Length: ${customersList.length}');
         } else {
           AppToasts.errorToast('Server Response Error'.tr);
         }
@@ -86,7 +88,7 @@ class CustomerController extends GetxController {
 
   @override
   void onInit() async {
-    await fetchCustomers();
     super.onInit();
+    await fetchCustomers();
   }
 }

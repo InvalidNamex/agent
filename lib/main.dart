@@ -1,11 +1,14 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:eit/screens/no_connection.dart';
 import 'package:eit/screens/reports_screens/customer_ledger_screen.dart';
 import 'package:eit/screens/reports_screens/sales_analysis/sales_analysis.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 
 import '/constants.dart';
 import '/screens/home_screen.dart';
@@ -35,8 +38,7 @@ void main() async {
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   //! this class overrides the check for certificate validation and logs user in even with expired certificate
   HttpOverrides.global = MyHttpOverrides();
-  // await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
-  runApp(const MyApp());
+  runApp(Phoenix(child: const MyApp()));
 }
 
 class MyHttpOverrides extends HttpOverrides {
@@ -72,23 +74,19 @@ class MyApp extends StatelessWidget {
       title: 'EIT',
       initialRoute: '/',
       enableLog: true,
+      logWriterCallback: (text, {isError = false}) {
+        if (isError) {
+          Logger().e(text);
+        } else {
+          Logger().i(text);
+        }
+      },
       theme: ThemeData(
           useMaterial3: false,
           fontFamily: 'Cairo',
           appBarTheme: const AppBarTheme(
               backgroundColor: lightColor,
               iconTheme: IconThemeData(color: darkColor))),
-      logWriterCallback: (text, {isError = false}) {
-        if (isError) {
-          Get.defaultDialog(
-              title: 'Error',
-              content: Text(
-                text,
-                maxLines: 10,
-                overflow: TextOverflow.ellipsis,
-              ));
-        }
-      },
       scrollBehavior: MyCustomScrollBehavior(),
       debugShowCheckedModeBanner: false,
       home: const SplashScreen(),
@@ -190,6 +188,12 @@ class MyApp extends StatelessWidget {
             binding: HomeBinding(),
             transition: Transition.circularReveal,
             transitionDuration: const Duration(milliseconds: 300)),
+        GetPage(
+            name: '/no-connection',
+            page: () => const NoConnection(),
+            binding: AuthBinding(),
+            transition: Transition.circularReveal,
+            transitionDuration: const Duration(milliseconds: 100)),
       ],
       builder: (context, child) {
         return Obx(() {

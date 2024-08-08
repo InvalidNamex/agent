@@ -31,7 +31,7 @@ class StockController extends GetxController {
       final response = await http.get(url);
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        if (data['Success']) {
+        if (data['Success'] && data['data'] != 'Empty Data.') {
           final List _x = json.decode(data['data']);
           for (final i in _x) {
             if (!stockItemList.contains(i)) {
@@ -39,7 +39,7 @@ class StockController extends GetxController {
             }
           }
         } else {
-          AppToasts.errorToast('No Stock Items Found'.tr);
+          AppToasts.successToast('Stock Items Unavailable'.tr);
         }
       } else {
         AppToasts.errorToast('Connection Error'.tr);

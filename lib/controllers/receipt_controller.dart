@@ -9,12 +9,12 @@ import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:logger/logger.dart';
 
+import '/helpers/toast.dart';
+import '/models/user_model.dart';
 import '../custom_widgets/date_filters.dart';
 import '../models/api/api_receipt_model.dart';
 import '../models/api/save_api_receipt_model.dart';
 import '../screens/print_receipt.dart';
-import '/helpers/toast.dart';
-import '/models/user_model.dart';
 import 'auth_controller.dart';
 
 class ReceiptController extends GetxController {
@@ -53,7 +53,7 @@ class ReceiptController extends GetxController {
         if (response.statusCode == 200) {
           final data = json.decode(response.body);
           if (data['Success']) {
-            if (data['data'] != 'Empty Date.') {
+            if (data['data'] != 'Empty Data.') {
               final List _x = json.decode(data['data']);
               for (final x in _x) {
                 if (!unfilteredList.contains(x)) {
